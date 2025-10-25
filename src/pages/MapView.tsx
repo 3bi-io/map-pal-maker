@@ -5,45 +5,59 @@ import { Card } from "@/components/ui/card";
 import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 
 const MapView = () => {
   const { id } = useParams();
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
-  const [mapboxToken, setMapboxToken] = useState("");
-  const [tokenSubmitted, setTokenSubmitted] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!mapContainer.current || !tokenSubmitted || !mapboxToken) return;
+    const initMap = async () => {
+      if (!mapContainer.current) return;
 
-    mapboxgl.accessToken = mapboxToken;
-    
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: "mapbox://styles/mapbox/streets-v12",
-      center: [-74.5, 40],
-      zoom: 9,
-    });
+      try {
+        // Fetch Mapbox token from edge function
+        const response = await fetch(
+          `https://yglllvordvxufsfdatqq.supabase.co/functions/v1/get-mapbox-token`
+        );
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch Mapbox token');
+        }
 
-    map.current.addControl(
-      new mapboxgl.NavigationControl({
-        visualizePitch: true,
-      }),
-      "top-right"
-    );
+        const { token } = await response.json();
+        mapboxgl.accessToken = token;
+        
+        map.current = new mapboxgl.Map({
+          container: mapContainer.current,
+          style: "mapbox://styles/mapbox/streets-v12",
+          center: [-74.5, 40],
+          zoom: 9,
+        });
+
+        map.current.addControl(
+          new mapboxgl.NavigationControl({
+            visualizePitch: true,
+          }),
+          "top-right"
+        );
+
+        setLoading(false);
+      } catch (err) {
+        console.error('Map initialization error:', err);
+        setError(err instanceof Error ? err.message : 'Failed to initialize map');
+        setLoading(false);
+      }
+    };
+
+    initMap();
 
     return () => {
       map.current?.remove();
     };
-  }, [tokenSubmitted, mapboxToken]);
-
-  const handleTokenSubmit = () => {
-    if (mapboxToken.trim()) {
-      setTokenSubmitted(true);
-    }
-  };
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-background">
@@ -60,37 +74,24 @@ const MapView = () => {
             </p>
           </div>
 
-          {!tokenSubmitted ? (
+          {loading ? (
             <Card className="p-8 shadow-elevated">
-              <div className="space-y-4 max-w-md mx-auto">
-                <div className="text-center space-y-2">
-                  <div className="w-16 h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center">
-                    <MapPin className="w-8 h-8 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-semibold">Enter Mapbox Token</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Get your free token at{" "}
-                    <a
-                      href="https://mapbox.com/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:underline"
-                    >
-                      mapbox.com
-                    </a>
-                  </p>
+              <div className="text-center space-y-4">
+                <div className="w-16 h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center">
+                  <MapPin className="w-8 h-8 text-primary animate-pulse" />
                 </div>
-                <div className="space-y-2">
-                  <Input
-                    type="text"
-                    placeholder="pk.eyJ1..."
-                    value={mapboxToken}
-                    onChange={(e) => setMapboxToken(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleTokenSubmit()}
-                  />
-                  <Button onClick={handleTokenSubmit} className="w-full">
-                    Load Map
-                  </Button>
+                <p className="text-muted-foreground">Loading map...</p>
+              </div>
+            </Card>
+          ) : error ? (
+            <Card className="p-8 shadow-elevated">
+              <div className="text-center space-y-4">
+                <div className="w-16 h-16 mx-auto rounded-full bg-destructive/10 flex items-center justify-center">
+                  <MapPin className="w-8 h-8 text-destructive" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">Error Loading Map</h3>
+                  <p className="text-sm text-muted-foreground">{error}</p>
                 </div>
               </div>
             </Card>
