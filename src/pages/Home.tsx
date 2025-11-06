@@ -3,28 +3,21 @@ import { MapPin, Link2, Map, Terminal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Navigation from "@/components/Navigation";
-
 const Home = () => {
-  const features = [
-    {
-      icon: Link2,
-      title: "Generate Tracking Links",
-      description: "Create unique tracking links instantly that can be shared with any device to monitor location.",
-    },
-    {
-      icon: Map,
-      title: "Real-time Map View",
-      description: "View tracked locations on an interactive map with live updates and location history.",
-    },
-    {
-      icon: Terminal,
-      title: "Terminal Integration",
-      description: "Receive location updates directly in your terminal using the WebSocket client.",
-    },
-  ];
-
-  return (
-    <div className="min-h-screen bg-gradient-background">
+  const features = [{
+    icon: Link2,
+    title: "Generate Tracking Links",
+    description: "Create unique tracking links instantly that can be shared with any device to monitor location."
+  }, {
+    icon: Map,
+    title: "Real-time Map View",
+    description: "View tracked locations on an interactive map with live updates and location history."
+  }, {
+    icon: Terminal,
+    title: "Terminal Integration",
+    description: "Receive location updates directly in your terminal using the WebSocket client."
+  }];
+  return <div className="min-h-screen bg-gradient-background">
       <Navigation />
       
       <main className="container mx-auto px-4">
@@ -56,15 +49,13 @@ const Home = () => {
         </section>
 
         <section className="py-20 grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {features.map((feature, index) => (
-            <Card key={index} className="p-6 space-y-4 shadow-card hover:shadow-elevated transition-shadow">
+          {features.map((feature, index) => <Card key={index} className="p-6 space-y-4 shadow-card hover:shadow-elevated transition-shadow">
               <div className="w-12 h-12 rounded-lg bg-gradient-primary flex items-center justify-center">
                 <feature.icon className="w-6 h-6 text-primary-foreground" />
               </div>
               <h3 className="text-xl font-semibold">{feature.title}</h3>
               <p className="text-muted-foreground">{feature.description}</p>
-            </Card>
-          ))}
+            </Card>)}
         </section>
 
         <section className="py-20 text-center">
@@ -87,11 +78,9 @@ const Home = () => {
 
       <footer className="border-t py-8 text-center text-sm text-muted-foreground">
         <div className="container mx-auto px-4">
-          <p>© 2024 Geo-Follower. All rights reserved.</p>
+          <p>© 2024 Geo-Follower -All rights reserved.</p>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Home;
