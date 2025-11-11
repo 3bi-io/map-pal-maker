@@ -4,17 +4,45 @@ import Navigation from "@/components/Navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import SEO from "@/components/SEO";
 
 const TrackView = () => {
   const { id } = useParams();
+  
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://geofollower.lovable.app"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Track Device",
+        "item": `https://geofollower.lovable.app/track/${id}`
+      }
+    ]
+  };
 
   const handleStartTracking = () => {
     toast.success("Location tracking started!");
   };
 
   return (
-    <div className="min-h-screen bg-gradient-background">
-      <Navigation />
+    <>
+      <SEO
+        title={`Enable Location Tracking - Tracker ${id} | Geo-Follower`}
+        description={`Start sharing your real-time location for tracking ID ${id}. Secure location tracking with live updates, WebSocket connection, and the ability to stop anytime.`}
+        keywords="enable location tracking, start GPS tracking, share location, device tracking, real-time location sharing"
+        canonical={`https://geofollower.lovable.app/track/${id}`}
+        structuredData={structuredData}
+      />
+      <div className="min-h-screen bg-gradient-background">
+        <Navigation />
       
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-2xl mx-auto space-y-6">
@@ -74,7 +102,8 @@ const TrackView = () => {
           </Card>
         </div>
       </main>
-    </div>
+      </div>
+    </>
   );
 };
 

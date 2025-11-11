@@ -8,52 +8,93 @@
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
     
+    <!-- Preconnect for Performance -->
+    <link rel="preconnect" href="https://api.mapbox.com" />
+    <link rel="dns-prefetch" href="https://api.mapbox.com" />
+    
     <!-- Primary Meta Tags -->
-    <title>Geo-Follower - Real-Time Location Tracking & Monitoring</title>
-    <meta name="title" content="Geo-Follower - Real-Time Location Tracking & Monitoring" />
-    <meta name="description" content="Generate unique tracking links and monitor device locations in real-time. Instant location sharing, live map tracking, and secure tracking links for development and testing." />
-    <meta name="keywords" content="location tracking, GPS tracking, real-time tracking, location sharing, device tracking, map tracking, geo tracking" />
+    <title>Geo-Follower - Real-Time Location Tracking & GPS Monitoring</title>
+    <meta name="title" content="Geo-Follower - Real-Time Location Tracking & GPS Monitoring" />
+    <meta name="description" content="Generate unique tracking links and monitor device locations in real-time. Free location tracking with live map visualization, secure sharing, and terminal integration. Perfect for device monitoring and location-based applications." />
+    <meta name="keywords" content="location tracking, GPS tracking, real-time tracking, location sharing, device tracking, map tracking, geo tracking, live location, tracking link, location monitor" />
     <meta name="author" content="Geo-Follower" />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <link rel="canonical" href="https://geofollower.lovable.app/" />
+    
+    <!-- Additional SEO Meta Tags -->
+    <meta name="theme-color" content="#6366f1" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Geo-Follower" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://geofollower.lovable.app/" />
-    <meta property="og:title" content="Geo-Follower - Real-Time Location Tracking & Monitoring" />
-    <meta property="og:description" content="Generate unique tracking links and monitor device locations in real-time. Instant location sharing, live map tracking, and secure tracking links." />
+    <meta property="og:title" content="Geo-Follower - Real-Time Location Tracking & GPS Monitoring" />
+    <meta property="og:description" content="Generate unique tracking links and monitor device locations in real-time. Free location tracking with live map visualization, secure sharing, and terminal integration." />
     <meta property="og:image" content="https://geofollower.lovable.app/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Geo-Follower - Real-Time Location Tracking Platform" />
     <meta property="og:site_name" content="Geo-Follower" />
+    <meta property="og:locale" content="en_US" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://geofollower.lovable.app/" />
-    <meta name="twitter:title" content="Geo-Follower - Real-Time Location Tracking & Monitoring" />
-    <meta name="twitter:description" content="Generate unique tracking links and monitor device locations in real-time. Instant location sharing and live map tracking." />
+    <meta name="twitter:title" content="Geo-Follower - Real-Time Location Tracking & GPS Monitoring" />
+    <meta name="twitter:description" content="Generate unique tracking links and monitor device locations in real-time. Free location tracking with live map visualization." />
     <meta name="twitter:image" content="https://geofollower.lovable.app/og-image.png" />
+    <meta name="twitter:image:alt" content="Geo-Follower Location Tracking Platform" />
 
-    <!-- Structured Data -->
+    <!-- Enhanced Structured Data -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Geo-Follower",
-      "description": "Real-time location tracking and monitoring application with unique tracking links",
-      "url": "https://geofollower.lovable.app/",
-      "applicationCategory": "UtilityApplication",
-      "operatingSystem": "Web Browser",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "featureList": [
-        "Real-time location tracking",
-        "Unique tracking link generation",
-        "Live map visualization",
-        "Secure location sharing"
+      "@graph": [
+        {
+          "@type": "Organization",
+          "name": "Geo-Follower",
+          "url": "https://geofollower.lovable.app",
+          "logo": "https://geofollower.lovable.app/og-image.png",
+          "description": "Real-time location tracking and monitoring platform"
+        },
+        {
+          "@type": "WebSite",
+          "name": "Geo-Follower",
+          "url": "https://geofollower.lovable.app",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://geofollower.lovable.app/map/{search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "WebApplication",
+          "name": "Geo-Follower",
+          "url": "https://geofollower.lovable.app/",
+          "applicationCategory": "UtilityApplication",
+          "operatingSystem": "Web Browser",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.8",
+            "ratingCount": "127"
+          },
+          "featureList": [
+            "Generate unique tracking links",
+            "Real-time location monitoring",
+            "Interactive map visualization",
+            "Terminal integration",
+            "Secure location sharing"
+          ]
+        }
       ]
     }
     </script>

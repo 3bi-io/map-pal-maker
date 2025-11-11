@@ -1,14 +1,13 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
+# Allow all crawlers
 User-agent: *
 Allow: /
+
+# Disallow dynamic tracking pages from indexing (unique per user)
+Disallow: /map/
+Disallow: /track/
+
+# Sitemap location
+Sitemap: https://geofollower.lovable.app/sitemap.xml
+
+# Crawl delay (optional, helps prevent server overload)
+Crawl-delay: 1

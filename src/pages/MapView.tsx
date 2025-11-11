@@ -5,9 +5,29 @@ import { Card } from "@/components/ui/card";
 import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import SEO from "@/components/SEO";
 
 const MapView = () => {
   const { id } = useParams();
+  
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://geofollower.lovable.app"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Map View",
+        "item": `https://geofollower.lovable.app/map/${id}`
+      }
+    ]
+  };
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [loading, setLoading] = useState(true);
@@ -60,8 +80,16 @@ const MapView = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-background">
-      <Navigation />
+    <>
+      <SEO
+        title={`Location Map View - Tracker ${id} | Geo-Follower`}
+        description={`View real-time location updates for tracking ID ${id} on an interactive map. Monitor device location with live GPS tracking and location history visualization.`}
+        keywords="location map, GPS map view, real-time map tracking, live location map, device location map, tracking map view"
+        canonical={`https://geofollower.lovable.app/map/${id}`}
+        structuredData={structuredData}
+      />
+      <div className="min-h-screen bg-gradient-background">
+        <Navigation />
       
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-5xl mx-auto space-y-6">
@@ -102,7 +130,8 @@ const MapView = () => {
           )}
         </div>
       </main>
-    </div>
+      </div>
+    </>
   );
 };
 

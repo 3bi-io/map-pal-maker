@@ -4,8 +4,36 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import Navigation from "@/components/Navigation";
+import SEO from "@/components/SEO";
 
 const CreateTracker = () => {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Create a Location Tracking Link",
+    "description": "Step-by-step guide to generate a unique tracking link for real-time location monitoring",
+    "step": [
+      {
+        "@type": "HowToStep",
+        "name": "Generate Tracking ID",
+        "text": "Click the button to generate a unique tracking ID for your device",
+        "position": 1
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Copy Tracking Link",
+        "text": "Copy the generated tracking link and share it with the device you want to track",
+        "position": 2
+      },
+      {
+        "@type": "HowToStep",
+        "name": "View on Map",
+        "text": "Use the map link to view real-time location updates on an interactive map",
+        "position": 3
+      }
+    ]
+  };
+
   const [trackingId, setTrackingId] = useState(generateTrackingId());
 
   function generateTrackingId() {
@@ -29,8 +57,16 @@ const CreateTracker = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-background">
-      <Navigation />
+    <>
+      <SEO
+        title="Create Location Tracker - Generate Tracking Link | Geo-Follower"
+        description="Generate a unique tracking link instantly. Create secure tracking IDs for real-time device location monitoring. Free location tracker with live map updates and terminal integration."
+        keywords="create tracking link, generate tracker, location tracking link, GPS tracker link, device tracking ID, tracking link generator, location monitor setup"
+        canonical="https://geofollower.lovable.app/create"
+        structuredData={structuredData}
+      />
+      <div className="min-h-screen bg-gradient-background">
+        <Navigation />
       
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-3xl mx-auto space-y-8">
@@ -140,7 +176,8 @@ const CreateTracker = () => {
           </Card>
         </div>
       </main>
-    </div>
+      </div>
+    </>
   );
 };
 

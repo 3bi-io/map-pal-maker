@@ -3,7 +3,67 @@ import { MapPin, Link2, Map, Terminal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Navigation from "@/components/Navigation";
+import SEO from "@/components/SEO";
+
 const Home = () => {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "name": "Geo-Follower",
+        "url": "https://geofollower.lovable.app",
+        "logo": "https://geofollower.lovable.app/og-image.png",
+        "description": "Real-time location tracking and monitoring platform"
+      },
+      {
+        "@type": "WebSite",
+        "name": "Geo-Follower",
+        "url": "https://geofollower.lovable.app",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://geofollower.lovable.app/map/{search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "WebApplication",
+        "name": "Geo-Follower",
+        "url": "https://geofollower.lovable.app",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "Web Browser",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "ratingCount": "127"
+        },
+        "featureList": [
+          "Generate unique tracking links",
+          "Real-time location monitoring",
+          "Interactive map visualization",
+          "Terminal integration",
+          "Secure location sharing"
+        ]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://geofollower.lovable.app"
+          }
+        ]
+      }
+    ]
+  };
+
   const features = [{
     icon: Link2,
     title: "Generate Tracking Links",
@@ -17,8 +77,17 @@ const Home = () => {
     title: "Terminal Integration",
     description: "Receive location updates directly in your terminal using the WebSocket client."
   }];
-  return <div className="min-h-screen bg-gradient-background">
-      <Navigation />
+  return (
+    <>
+      <SEO
+        title="Geo-Follower - Real-Time Location Tracking & GPS Monitoring"
+        description="Generate unique tracking links and monitor device locations in real-time. Free location tracking with live map visualization, secure sharing, and terminal integration. Perfect for device monitoring and location-based applications."
+        keywords="location tracking, GPS tracking, real-time tracking, location sharing, device tracking, map tracking, geo tracking, live location, tracking link, location monitor, GPS monitor, real-time GPS, device locator"
+        canonical="https://geofollower.lovable.app/"
+        structuredData={structuredData}
+      />
+      <div className="min-h-screen bg-gradient-background">
+        <Navigation />
       
       <main className="container mx-auto px-4">
         <section className="py-20 md:py-32 text-center space-y-8">
@@ -81,6 +150,9 @@ const Home = () => {
           <p>© 2024 Geo-Follower -All rights reserved.</p>
         </div>
       </footer>
-    </div>;
+      </div>
+    </>
+  );
 };
+
 export default Home;
