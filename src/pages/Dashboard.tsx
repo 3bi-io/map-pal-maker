@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { MapPin, Plus, Copy, ExternalLink, Trash2, ToggleLeft, ToggleRight, Clock, Map } from 'lucide-react';
+import { MapPin, Plus, Copy, ExternalLink, Trash2, ToggleLeft, ToggleRight, Clock, Map, QrCode } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -9,6 +9,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import Navigation from '@/components/Navigation';
 import SEO from '@/components/SEO';
+import QRCodeDialog from '@/components/QRCodeDialog';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -35,6 +36,7 @@ const Dashboard = () => {
   const [trackers, setTrackers] = useState<Tracker[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteTrackerId, setDeleteTrackerId] = useState<string | null>(null);
+  const [qrTracker, setQrTracker] = useState<Tracker | null>(null);
   
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -298,6 +300,16 @@ const Dashboard = () => {
                       <Button
                         variant="outline"
                         size="sm"
+                        onClick={() => setQrTracker(tracker)}
+                        className="gap-1"
+                      >
+                        <QrCode className="w-3 h-3" />
+                        QR Code
+                      </Button>
+
+                      <Button
+                        variant="outline"
+                        size="sm"
                         onClick={() => copyToClipboard(
                           `${window.location.origin}/track/${tracker.tracking_id}`,
                           'Tracking link'
@@ -368,6 +380,13 @@ const Dashboard = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <QRCodeDialog
+        open={!!qrTracker}
+        onOpenChange={(open) => !open && setQrTracker(null)}
+        url={qrTracker ? `${window.location.origin}/track/${qrTracker.tracking_id}` : ''}
+        title={qrTracker?.name || 'Tracker'}
+      />
     </>
   );
 };
