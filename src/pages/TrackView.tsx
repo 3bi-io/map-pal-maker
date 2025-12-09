@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
+import { supabase } from "@/integrations/supabase/client";
 
 type TrackingStatus = "idle" | "requesting" | "tracking" | "error";
 
@@ -15,6 +16,7 @@ const TrackView = () => {
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [watchId, setWatchId] = useState<number | null>(null);
+  const [updateCount, setUpdateCount] = useState(0);
   
   const structuredData = {
     "@context": "https://schema.org",
@@ -33,6 +35,26 @@ const TrackView = () => {
         "item": `https://geofollower.lovable.app/track/${id}`
       }
     ]
+  };
+
+  const saveLocationToDatabase = async (latitude: number, longitude: number, accuracy: number | null) => {
+    if (!id) return;
+    
+    const { error } = await supabase
+      .from('location_updates')
+      .insert({
+        tracking_id: id,
+        latitude,
+        longitude,
+        accuracy
+      });
+
+    if (error) {
+      console.error('Failed to save location:', error);
+    } else {
+      setUpdateCount(prev => prev + 1);
+      console.log(`[${new Date().toISOString()}] Location saved to database`);
+    }
   };
 
   const stopTracking = useCallback(() => {
@@ -63,18 +85,20 @@ const TrackView = () => {
 
     setStatus("requesting");
 
-    const id = navigator.geolocation.watchPosition(
+    const geoWatchId = navigator.geolocation.watchPosition(
       (position) => {
-        const { latitude, longitude } = position.coords;
+        const { latitude, longitude, accuracy } = position.coords;
         setLocation({ lat: latitude, lng: longitude });
         setStatus("tracking");
         
-        // Log for debugging - in production this would send to a server
+        // Save to database
+        saveLocationToDatabase(latitude, longitude, accuracy);
+        
         console.log(`[${new Date().toISOString()}] Location update:`, {
           trackingId: id,
           lat: latitude,
           lng: longitude,
-          accuracy: position.coords.accuracy
+          accuracy
         });
       },
       (error) => {
@@ -103,7 +127,7 @@ const TrackView = () => {
       }
     );
 
-    setWatchId(id);
+    setWatchId(geoWatchId);
     toast.success("Location tracking started!");
   };
 
@@ -149,7 +173,7 @@ const TrackView = () => {
             {status === "tracking" && location && (
               <div className="p-4 bg-green-500/10 rounded-lg border border-green-500/20">
                 <p className="text-sm font-medium text-green-700 dark:text-green-400 mb-2">
-                  Currently sharing location:
+                  Currently sharing location ({updateCount} updates sent):
                 </p>
                 <p className="font-mono text-sm">
                   Lat: {location.lat.toFixed(6)}, Lng: {location.lng.toFixed(6)}
@@ -169,7 +193,7 @@ const TrackView = () => {
                 <div>
                   <h3 className="font-semibold mb-1">Real-time Updates</h3>
                   <p className="text-sm text-muted-foreground">
-                    Your location will be shared in real-time with the tracking service.
+                    Your location will be saved and shared in real-time.
                   </p>
                 </div>
               </div>
@@ -177,9 +201,9 @@ const TrackView = () => {
               <div className="flex items-start gap-3">
                 <CheckCircle className="w-5 h-5 text-primary mt-0.5" />
                 <div>
-                  <h3 className="font-semibold mb-1">Secure Connection</h3>
+                  <h3 className="font-semibold mb-1">Secure Storage</h3>
                   <p className="text-sm text-muted-foreground">
-                    All location data is transmitted securely via WebSocket connection.
+                    All location data is stored securely in the cloud.
                   </p>
                 </div>
               </div>
