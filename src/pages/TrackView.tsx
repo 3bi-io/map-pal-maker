@@ -28,13 +28,13 @@ const TrackView = () => {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://geofollower.lovable.app"
+        "item": "https://trackview.lovable.app"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Track Device",
-        "item": `https://geofollower.lovable.app/track/${id}`
+        "item": `https://trackview.lovable.app/track/${id}`
       }
     ]
   };
@@ -179,7 +179,7 @@ const TrackView = () => {
     return (
       <>
         <SEO
-          title="Invalid Tracker | Geo-Follower"
+          title="Invalid Tracker | TrackView"
           description="This tracking link is invalid or has expired."
         />
         <div className="min-h-screen bg-gradient-background">
@@ -204,10 +204,10 @@ const TrackView = () => {
   return (
     <>
       <SEO
-        title={`Enable Location Tracking - ${trackerInfo?.name || 'Tracker'} | Geo-Follower`}
+        title={`Enable Location Tracking - ${trackerInfo?.name || 'Tracker'} | TrackView`}
         description={`Start sharing your real-time location for tracking ID ${id}. Secure location tracking with live updates.`}
         keywords="enable location tracking, start GPS tracking, share location, device tracking, real-time location sharing"
-        canonical={`https://geofollower.lovable.app/track/${id}`}
+        canonical={`https://trackview.lovable.app/track/${id}`}
         structuredData={structuredData}
       />
       <div className="min-h-screen bg-gradient-background">

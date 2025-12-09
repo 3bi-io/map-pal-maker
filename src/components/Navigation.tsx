@@ -30,8 +30,8 @@ const Navigation = () => {
             <MapPin className="w-5 h-5 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-foreground">Geo-Follower</h1>
-            <p className="text-xs text-muted-foreground">WHERE ARE YOU?</p>
+            <h1 className="text-xl font-bold text-foreground">TrackView</h1>
+            <p className="text-xs text-muted-foreground">REAL-TIME TRACKING</p>
           </div>
         </Link>
         

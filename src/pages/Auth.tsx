@@ -117,7 +117,7 @@ const Auth = () => {
   return (
     <>
       <SEO
-        title={isLogin ? 'Sign In - Geo-Follower' : 'Create Account - Geo-Follower'}
+        title={isLogin ? 'Sign In - TrackView' : 'Create Account - TrackView'}
         description="Sign in or create an account to manage your location trackers."
       />
       <div className="min-h-screen bg-gradient-background flex items-center justify-center p-4">

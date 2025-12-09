@@ -35,13 +35,13 @@ const MapView = () => {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://geofollower.lovable.app"
+        "item": "https://trackview.lovable.app"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Map View",
-        "item": `https://geofollower.lovable.app/map/${id}`
+        "item": `https://trackview.lovable.app/map/${id}`
       }
     ]
   };
@@ -241,10 +241,10 @@ const MapView = () => {
   return (
     <>
       <SEO
-        title={`Live Map - Tracking ${id} | Geo-Follower`}
+        title={`Live Map - Tracking ${id} | TrackView`}
         description={`View real-time location updates on an interactive map for tracking ID ${id}. Monitor device movement with live GPS tracking, path visualization, and location history.`}
         keywords="live map tracking, GPS map view, real-time location map, device tracker map, location monitoring, tracking visualization"
-        canonical={`https://geofollower.lovable.app/map/${id}`}
+        canonical={`https://trackview.lovable.app/map/${id}`}
         structuredData={structuredData}
       />
       <div className="min-h-screen bg-gradient-background flex flex-col">
