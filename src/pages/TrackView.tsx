@@ -50,19 +50,16 @@ const TrackView = () => {
 
       const { data, error } = await supabase
         .from('trackers')
-        .select('name, is_active, expires_at')
+        .select('name, is_active')
         .eq('tracking_id', id)
         .maybeSingle();
 
       if (error || !data) {
         setStatus("invalid");
-        setErrorMessage("This tracking link is invalid or has expired.");
+        setErrorMessage("This tracking link is invalid.");
       } else if (!data.is_active) {
         setStatus("invalid");
         setErrorMessage("This tracker has been paused by its owner.");
-      } else if (data.expires_at && new Date(data.expires_at) < new Date()) {
-        setStatus("invalid");
-        setErrorMessage("This tracking link has expired.");
       } else {
         setTrackerInfo({ name: data.name, is_active: data.is_active });
       }
