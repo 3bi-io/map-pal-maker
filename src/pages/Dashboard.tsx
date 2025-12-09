@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { MapPin, Plus, Copy, ExternalLink, Trash2, ToggleLeft, ToggleRight, Clock, Map, QrCode } from 'lucide-react';
+import { MapPin, Plus, Copy, ExternalLink, Trash2, ToggleLeft, ToggleRight, Clock, Map, QrCode, Pencil, Check, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -37,6 +38,9 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [deleteTrackerId, setDeleteTrackerId] = useState<string | null>(null);
   const [qrTracker, setQrTracker] = useState<Tracker | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editName, setEditName] = useState('');
+  const editInputRef = useRef<HTMLInputElement>(null);
   
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -191,6 +195,57 @@ const Dashboard = () => {
     }
   };
 
+  const startEditing = (tracker: Tracker) => {
+    setEditingId(tracker.id);
+    setEditName(tracker.name);
+    setTimeout(() => editInputRef.current?.focus(), 0);
+  };
+
+  const cancelEditing = () => {
+    setEditingId(null);
+    setEditName('');
+  };
+
+  const saveTrackerName = async (trackerId: string) => {
+    const trimmedName = editName.trim();
+    if (!trimmedName) {
+      toast({
+        title: 'Error',
+        description: 'Tracker name cannot be empty',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('trackers')
+        .update({ name: trimmedName })
+        .eq('id', trackerId);
+
+      if (error) throw error;
+
+      setTrackers(trackers.map(t => 
+        t.id === trackerId ? { ...t, name: trimmedName } : t
+      ));
+
+      toast({
+        title: 'Renamed',
+        description: 'Tracker name updated successfully.',
+      });
+    } catch (error) {
+      console.error('Error renaming tracker:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to rename tracker',
+        variant: 'destructive',
+      });
+    } finally {
+      setEditingId(null);
+      setEditName('');
+    }
+  };
+
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
     toast({
@@ -266,7 +321,46 @@ const Dashboard = () => {
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex-1 min-w-0">
-                        <CardTitle className="text-lg truncate">{tracker.name}</CardTitle>
+                        {editingId === tracker.id ? (
+                          <div className="flex items-center gap-1">
+                            <Input
+                              ref={editInputRef}
+                              value={editName}
+                              onChange={(e) => setEditName(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') saveTrackerName(tracker.id);
+                                if (e.key === 'Escape') cancelEditing();
+                              }}
+                              className="h-7 text-base font-semibold"
+                              maxLength={50}
+                            />
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7 text-green-600"
+                              onClick={() => saveTrackerName(tracker.id)}
+                            >
+                              <Check className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7 text-muted-foreground"
+                              onClick={cancelEditing}
+                            >
+                              <X className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        ) : (
+                          <CardTitle
+                            className="text-lg truncate cursor-pointer hover:text-primary transition-colors group flex items-center gap-1"
+                            onClick={() => startEditing(tracker)}
+                            title="Click to rename"
+                          >
+                            {tracker.name}
+                            <Pencil className="w-3 h-3 opacity-0 group-hover:opacity-50 transition-opacity" />
+                          </CardTitle>
+                        )}
                         <CardDescription className="font-mono text-xs">
                           {tracker.tracking_id}
                         </CardDescription>
