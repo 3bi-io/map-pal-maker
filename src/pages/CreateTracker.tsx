@@ -59,10 +59,10 @@ const CreateTracker = () => {
   return (
     <>
       <SEO
-        title="Create Location Tracker - Generate Tracking Link | Geo-Follower"
+        title="Create Location Tracker - Generate Tracking Link | TrackView"
         description="Generate a unique tracking link instantly. Create secure tracking IDs for real-time device location monitoring. Free location tracker with live map updates and terminal integration."
         keywords="create tracking link, generate tracker, location tracking link, GPS tracker link, device tracking ID, tracking link generator, location monitor setup"
-        canonical="https://geofollower.lovable.app/create"
+        canonical="https://trackview.lovable.app/create"
         structuredData={structuredData}
       />
       <div className="min-h-screen bg-gradient-background">

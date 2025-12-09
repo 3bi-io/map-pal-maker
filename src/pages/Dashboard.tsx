@@ -225,7 +225,7 @@ const Dashboard = () => {
   return (
     <>
       <SEO
-        title="Dashboard - Geo-Follower"
+        title="Dashboard - TrackView"
         description="Manage your location trackers from your dashboard."
       />
       <div className="min-h-screen bg-gradient-background">

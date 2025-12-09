@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { MapPin, Link2, Map, Terminal, Shield } from "lucide-react";
+import { MapPin, Link2, Map, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Navigation from "@/components/Navigation";
@@ -14,25 +14,25 @@ const Home = () => {
     "@graph": [
       {
         "@type": "Organization",
-        "name": "Geo-Follower",
-        "url": "https://geofollower.lovable.app",
-        "logo": "https://geofollower.lovable.app/og-image.png",
+        "name": "TrackView",
+        "url": "https://trackview.lovable.app",
+        "logo": "https://trackview.lovable.app/og-image.png",
         "description": "Real-time location tracking and monitoring platform"
       },
       {
         "@type": "WebSite",
-        "name": "Geo-Follower",
-        "url": "https://geofollower.lovable.app",
+        "name": "TrackView",
+        "url": "https://trackview.lovable.app",
         "potentialAction": {
           "@type": "SearchAction",
-          "target": "https://geofollower.lovable.app/map/{search_term_string}",
+          "target": "https://trackview.lovable.app/map/{search_term_string}",
           "query-input": "required name=search_term_string"
         }
       },
       {
         "@type": "WebApplication",
-        "name": "Geo-Follower",
-        "url": "https://geofollower.lovable.app",
+        "name": "TrackView",
+        "url": "https://trackview.lovable.app",
         "applicationCategory": "UtilityApplication",
         "operatingSystem": "Web Browser",
         "offers": {
@@ -60,7 +60,7 @@ const Home = () => {
             "@type": "ListItem",
             "position": 1,
             "name": "Home",
-            "item": "https://geofollower.lovable.app"
+            "item": "https://trackview.lovable.app"
           }
         ]
       }
@@ -83,10 +83,10 @@ const Home = () => {
   return (
     <>
       <SEO
-        title="Geo-Follower - Real-Time Location Tracking & GPS Monitoring"
+        title="TrackView - Real-Time Location Tracking & GPS Monitoring"
         description="Generate unique tracking links and monitor device locations in real-time. Free location tracking with live map visualization, secure sharing, and terminal integration. Perfect for device monitoring and location-based applications."
         keywords="location tracking, GPS tracking, real-time tracking, location sharing, device tracking, map tracking, geo tracking, live location, tracking link, location monitor, GPS monitor, real-time GPS, device locator"
-        canonical="https://geofollower.lovable.app/"
+        canonical="https://trackview.lovable.app/"
         structuredData={structuredData}
       />
       <div className="min-h-screen bg-gradient-background">
@@ -163,7 +163,7 @@ const Home = () => {
 
       <footer className="border-t py-8 text-center text-sm text-muted-foreground">
         <div className="container mx-auto px-4">
-          <p>© 2024 Geo-Follower -All rights reserved.</p>
+          <p>© 2024 TrackView - All rights reserved.</p>
         </div>
       </footer>
       </div>

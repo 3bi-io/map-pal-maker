@@ -17,8 +17,8 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       includeAssets: ["favicon.png", "og-image.png"],
       manifest: {
-        name: "Geo-Follower",
-        short_name: "GeoFollow",
+        name: "TrackView",
+        short_name: "TrackView",
         description: "Real-time location tracking and monitoring platform",
         theme_color: "#0ea5e9",
         background_color: "#0f172a",
