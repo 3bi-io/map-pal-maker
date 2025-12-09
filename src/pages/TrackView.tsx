@@ -1,13 +1,20 @@
+import { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
-import { MapPin, CheckCircle } from "lucide-react";
+import { MapPin, CheckCircle, Loader2, XCircle } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
 
+type TrackingStatus = "idle" | "requesting" | "tracking" | "error";
+
 const TrackView = () => {
   const { id } = useParams();
+  const [status, setStatus] = useState<TrackingStatus>("idle");
+  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [watchId, setWatchId] = useState<number | null>(null);
   
   const structuredData = {
     "@context": "https://schema.org",
@@ -28,7 +35,75 @@ const TrackView = () => {
     ]
   };
 
+  const stopTracking = useCallback(() => {
+    if (watchId !== null) {
+      navigator.geolocation.clearWatch(watchId);
+      setWatchId(null);
+    }
+    setStatus("idle");
+    setLocation(null);
+    toast.info("Location tracking stopped");
+  }, [watchId]);
+
+  useEffect(() => {
+    return () => {
+      if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+      }
+    };
+  }, [watchId]);
+
   const handleStartTracking = () => {
+    if (!navigator.geolocation) {
+      setStatus("error");
+      setErrorMessage("Geolocation is not supported by your browser");
+      toast.error("Geolocation not supported");
+      return;
+    }
+
+    setStatus("requesting");
+
+    const id = navigator.geolocation.watchPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setLocation({ lat: latitude, lng: longitude });
+        setStatus("tracking");
+        
+        // Log for debugging - in production this would send to a server
+        console.log(`[${new Date().toISOString()}] Location update:`, {
+          trackingId: id,
+          lat: latitude,
+          lng: longitude,
+          accuracy: position.coords.accuracy
+        });
+      },
+      (error) => {
+        setStatus("error");
+        let message = "Unable to retrieve location";
+        
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            message = "Location permission denied. Please allow location access and try again.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            message = "Location information unavailable";
+            break;
+          case error.TIMEOUT:
+            message = "Location request timed out";
+            break;
+        }
+        
+        setErrorMessage(message);
+        toast.error(message);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 5000
+      }
+    );
+
+    setWatchId(id);
     toast.success("Location tracking started!");
   };
 
@@ -47,11 +122,23 @@ const TrackView = () => {
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-2xl mx-auto space-y-6">
           <div className="text-center space-y-2">
-            <div className="w-20 h-20 mx-auto rounded-full bg-gradient-primary flex items-center justify-center shadow-elevated">
-              <MapPin className="w-10 h-10 text-primary-foreground" />
+            <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center shadow-elevated ${
+              status === "tracking" ? "bg-green-500" : 
+              status === "error" ? "bg-destructive" : 
+              "bg-gradient-primary"
+            }`}>
+              {status === "requesting" ? (
+                <Loader2 className="w-10 h-10 text-primary-foreground animate-spin" />
+              ) : status === "error" ? (
+                <XCircle className="w-10 h-10 text-destructive-foreground" />
+              ) : (
+                <MapPin className="w-10 h-10 text-primary-foreground" />
+              )}
             </div>
             <h1 className="text-3xl md:text-4xl font-bold text-foreground pt-4">
-              Enable Location Tracking
+              {status === "tracking" ? "Tracking Active" : 
+               status === "error" ? "Tracking Error" : 
+               "Enable Location Tracking"}
             </h1>
             <p className="text-muted-foreground">
               Tracking ID: <span className="font-mono text-primary">{id}</span>
@@ -59,6 +146,23 @@ const TrackView = () => {
           </div>
 
           <Card className="p-8 shadow-elevated space-y-6">
+            {status === "tracking" && location && (
+              <div className="p-4 bg-green-500/10 rounded-lg border border-green-500/20">
+                <p className="text-sm font-medium text-green-700 dark:text-green-400 mb-2">
+                  Currently sharing location:
+                </p>
+                <p className="font-mono text-sm">
+                  Lat: {location.lat.toFixed(6)}, Lng: {location.lng.toFixed(6)}
+                </p>
+              </div>
+            )}
+
+            {status === "error" && (
+              <div className="p-4 bg-destructive/10 rounded-lg border border-destructive/20">
+                <p className="text-sm text-destructive">{errorMessage}</p>
+              </div>
+            )}
+
             <div className="space-y-4">
               <div className="flex items-start gap-3">
                 <CheckCircle className="w-5 h-5 text-primary mt-0.5" />
@@ -85,20 +189,42 @@ const TrackView = () => {
                 <div>
                   <h3 className="font-semibold mb-1">Stop Anytime</h3>
                   <p className="text-sm text-muted-foreground">
-                    You can stop sharing your location at any time by closing this page.
+                    You can stop sharing your location at any time by clicking the stop button.
                   </p>
                 </div>
               </div>
             </div>
 
-            <Button 
-              size="lg" 
-              className="w-full gap-2"
-              onClick={handleStartTracking}
-            >
-              <MapPin className="w-5 h-5" />
-              Start Tracking
-            </Button>
+            {status === "tracking" ? (
+              <Button 
+                size="lg" 
+                variant="destructive"
+                className="w-full gap-2"
+                onClick={stopTracking}
+              >
+                <XCircle className="w-5 h-5" />
+                Stop Tracking
+              </Button>
+            ) : (
+              <Button 
+                size="lg" 
+                className="w-full gap-2"
+                onClick={handleStartTracking}
+                disabled={status === "requesting"}
+              >
+                {status === "requesting" ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Requesting Permission...
+                  </>
+                ) : (
+                  <>
+                    <MapPin className="w-5 h-5" />
+                    {status === "error" ? "Try Again" : "Start Tracking"}
+                  </>
+                )}
+              </Button>
+            )}
           </Card>
         </div>
       </main>
