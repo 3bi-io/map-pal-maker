@@ -1,17 +1,20 @@
-import { MapPin, LogOut, LayoutDashboard, User } from "lucide-react";
+import { MapPin, LogOut, LayoutDashboard, User, Sun, Moon, Smartphone } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { useTheme } from "@/hooks/useTheme";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const Navigation = () => {
+  const { theme, setTheme } = useTheme();
   const { user, signOut } = useAuth();
 
   const getInitials = () => {
@@ -32,10 +35,40 @@ const Navigation = () => {
           </div>
         </Link>
         
-        <div className="flex items-center gap-4">
-          <Link to="/">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <Link to="/" className="hidden sm:block">
             <Button variant="ghost">Home</Button>
           </Link>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                {theme === 'light' ? (
+                  <Sun className="w-4 h-4" />
+                ) : theme === 'oled' ? (
+                  <Smartphone className="w-4 h-4" />
+                ) : (
+                  <Moon className="w-4 h-4" />
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Display Mode</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setTheme('light')} className={theme === 'light' ? 'bg-accent' : ''}>
+                <Sun className="w-4 h-4 mr-2" />
+                Light
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme('dark')} className={theme === 'dark' ? 'bg-accent' : ''}>
+                <Moon className="w-4 h-4 mr-2" />
+                Dark
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme('oled')} className={theme === 'oled' ? 'bg-accent' : ''}>
+                <Smartphone className="w-4 h-4 mr-2" />
+                OLED Black
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           
           {user ? (
             <>
