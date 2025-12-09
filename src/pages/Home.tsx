@@ -1,11 +1,14 @@
 import { Link } from "react-router-dom";
-import { MapPin, Link2, Map, Terminal } from "lucide-react";
+import { MapPin, Link2, Map, Terminal, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
+import { useAuth } from "@/hooks/useAuth";
 
 const Home = () => {
+  const { user } = useAuth();
+  
   const structuredData = {
     "@context": "https://schema.org",
     "@graph": [
@@ -73,9 +76,9 @@ const Home = () => {
     title: "Real-time Map View",
     description: "View tracked locations on an interactive map with live updates and location history."
   }, {
-    icon: Terminal,
-    title: "Terminal Integration",
-    description: "Receive location updates directly in your terminal using the WebSocket client."
+    icon: Shield,
+    title: "Secure & Private",
+    description: "Full control over your trackers with authentication, expiration, and pause controls."
   }];
   return (
     <>
@@ -105,15 +108,28 @@ const Home = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-            <Link to="/create">
-              <Button size="lg" className="gap-2 text-lg px-8 shadow-elevated">
-                <MapPin className="w-5 h-5" />
-                Create Tracker
-              </Button>
-            </Link>
-            <Button size="lg" variant="outline" className="gap-2 text-lg px-8">
-              Learn More
-            </Button>
+            {user ? (
+              <Link to="/dashboard">
+                <Button size="lg" className="gap-2 text-lg px-8 shadow-elevated">
+                  <MapPin className="w-5 h-5" />
+                  Go to Dashboard
+                </Button>
+              </Link>
+            ) : (
+              <>
+                <Link to="/auth">
+                  <Button size="lg" className="gap-2 text-lg px-8 shadow-elevated">
+                    <MapPin className="w-5 h-5" />
+                    Get Started
+                  </Button>
+                </Link>
+                <Link to="/auth">
+                  <Button size="lg" variant="outline" className="gap-2 text-lg px-8">
+                    Sign In
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </section>
 
@@ -135,10 +151,10 @@ const Home = () => {
             <p className="text-lg opacity-90 mb-8">
               Create your first tracking link in seconds and start monitoring locations.
             </p>
-            <Link to="/create">
+            <Link to={user ? "/dashboard" : "/auth"}>
               <Button size="lg" variant="secondary" className="gap-2 text-lg px-8">
                 <MapPin className="w-5 h-5" />
-                Get Started Now
+                {user ? "Go to Dashboard" : "Get Started Now"}
               </Button>
             </Link>
           </Card>

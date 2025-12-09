@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { useParams } from "react-router-dom";
-import { MapPin, CheckCircle, Loader2, XCircle } from "lucide-react";
+import { useParams, Link } from "react-router-dom";
+import { MapPin, CheckCircle, Loader2, XCircle, AlertTriangle } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import SEO from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 
-type TrackingStatus = "idle" | "requesting" | "tracking" | "error";
+type TrackingStatus = "idle" | "requesting" | "tracking" | "error" | "invalid";
 
 const TrackView = () => {
   const { id } = useParams();
@@ -17,6 +17,8 @@ const TrackView = () => {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [watchId, setWatchId] = useState<number | null>(null);
   const [updateCount, setUpdateCount] = useState(0);
+  const [trackerInfo, setTrackerInfo] = useState<{ name: string; is_active: boolean } | null>(null);
+  const [checkingTracker, setCheckingTracker] = useState(true);
   
   const structuredData = {
     "@context": "https://schema.org",
@@ -37,6 +39,40 @@ const TrackView = () => {
     ]
   };
 
+  // Check if tracker exists and is active
+  useEffect(() => {
+    const checkTracker = async () => {
+      if (!id) {
+        setStatus("invalid");
+        setCheckingTracker(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('trackers')
+        .select('name, is_active, expires_at')
+        .eq('tracking_id', id)
+        .maybeSingle();
+
+      if (error || !data) {
+        setStatus("invalid");
+        setErrorMessage("This tracking link is invalid or has expired.");
+      } else if (!data.is_active) {
+        setStatus("invalid");
+        setErrorMessage("This tracker has been paused by its owner.");
+      } else if (data.expires_at && new Date(data.expires_at) < new Date()) {
+        setStatus("invalid");
+        setErrorMessage("This tracking link has expired.");
+      } else {
+        setTrackerInfo({ name: data.name, is_active: data.is_active });
+      }
+      
+      setCheckingTracker(false);
+    };
+
+    checkTracker();
+  }, [id]);
+
   const saveLocationToDatabase = async (latitude: number, longitude: number, accuracy: number | null) => {
     if (!id) return;
     
@@ -51,9 +87,14 @@ const TrackView = () => {
 
     if (error) {
       console.error('Failed to save location:', error);
+      // Check if tracker was deactivated
+      if (error.message?.includes('violates row-level security')) {
+        setStatus("error");
+        setErrorMessage("This tracker has been paused or deleted.");
+        stopTracking();
+      }
     } else {
       setUpdateCount(prev => prev + 1);
-      console.log(`[${new Date().toISOString()}] Location saved to database`);
     }
   };
 
@@ -91,15 +132,7 @@ const TrackView = () => {
         setLocation({ lat: latitude, lng: longitude });
         setStatus("tracking");
         
-        // Save to database
         saveLocationToDatabase(latitude, longitude, accuracy);
-        
-        console.log(`[${new Date().toISOString()}] Location update:`, {
-          trackingId: id,
-          lat: latitude,
-          lng: longitude,
-          accuracy
-        });
       },
       (error) => {
         setStatus("error");
@@ -131,11 +164,48 @@ const TrackView = () => {
     toast.success("Location tracking started!");
   };
 
+  if (checkingTracker) {
+    return (
+      <div className="min-h-screen bg-gradient-background flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 text-primary mx-auto animate-spin mb-4" />
+          <p className="text-muted-foreground">Verifying tracker...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (status === "invalid") {
+    return (
+      <>
+        <SEO
+          title="Invalid Tracker | Geo-Follower"
+          description="This tracking link is invalid or has expired."
+        />
+        <div className="min-h-screen bg-gradient-background">
+          <Navigation />
+          <main className="container mx-auto px-4 py-12">
+            <div className="max-w-md mx-auto text-center space-y-6">
+              <div className="w-20 h-20 mx-auto rounded-full bg-destructive/10 flex items-center justify-center">
+                <AlertTriangle className="w-10 h-10 text-destructive" />
+              </div>
+              <h1 className="text-2xl font-bold text-foreground">Invalid Tracker</h1>
+              <p className="text-muted-foreground">{errorMessage}</p>
+              <Link to="/">
+                <Button>Go to Home</Button>
+              </Link>
+            </div>
+          </main>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <SEO
-        title={`Enable Location Tracking - Tracker ${id} | Geo-Follower`}
-        description={`Start sharing your real-time location for tracking ID ${id}. Secure location tracking with live updates, WebSocket connection, and the ability to stop anytime.`}
+        title={`Enable Location Tracking - ${trackerInfo?.name || 'Tracker'} | Geo-Follower`}
+        description={`Start sharing your real-time location for tracking ID ${id}. Secure location tracking with live updates.`}
         keywords="enable location tracking, start GPS tracking, share location, device tracking, real-time location sharing"
         canonical={`https://geofollower.lovable.app/track/${id}`}
         structuredData={structuredData}
@@ -164,7 +234,10 @@ const TrackView = () => {
                status === "error" ? "Tracking Error" : 
                "Enable Location Tracking"}
             </h1>
-            <p className="text-muted-foreground">
+            {trackerInfo && (
+              <p className="text-lg text-muted-foreground">{trackerInfo.name}</p>
+            )}
+            <p className="text-muted-foreground text-sm">
               Tracking ID: <span className="font-mono text-primary">{id}</span>
             </p>
           </div>
@@ -213,7 +286,7 @@ const TrackView = () => {
                 <div>
                   <h3 className="font-semibold mb-1">Stop Anytime</h3>
                   <p className="text-sm text-muted-foreground">
-                    You can stop sharing your location at any time by clicking the stop button.
+                    You can stop sharing your location at any time.
                   </p>
                 </div>
               </div>
