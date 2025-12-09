@@ -97,16 +97,13 @@ const MapView = () => {
       if (!mapContainer.current) return;
 
       try {
-        const response = await fetch(
-          `https://yglllvordvxufsfdatqq.supabase.co/functions/v1/get-mapbox-token`
-        );
+        const { data, error: funcError } = await supabase.functions.invoke('get-mapbox-token');
         
-        if (!response.ok) {
+        if (funcError || !data?.token) {
           throw new Error('Failed to fetch Mapbox token');
         }
 
-        const { token } = await response.json();
-        mapboxgl.accessToken = token;
+        mapboxgl.accessToken = data.token;
 
         const latestLocation = locations.length > 0 ? locations[locations.length - 1] : null;
         const center: [number, number] = latestLocation 
