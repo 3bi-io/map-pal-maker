@@ -27,7 +27,6 @@ interface Tracker {
   tracking_id: string;
   name: string;
   is_active: boolean;
-  expires_at: string | null;
   created_at: string;
   location_count?: number;
   last_update?: string;
@@ -263,10 +262,6 @@ const Dashboard = () => {
     });
   };
 
-  const isExpired = (expiresAt: string | null) => {
-    if (!expiresAt) return false;
-    return new Date(expiresAt) < new Date();
-  };
 
   if (authLoading || loading) {
     return (
@@ -366,9 +361,7 @@ const Dashboard = () => {
                         </CardDescription>
                       </div>
                       <div className="flex items-center gap-1">
-                        {isExpired(tracker.expires_at) ? (
-                          <Badge variant="destructive">Expired</Badge>
-                        ) : tracker.is_active ? (
+                        {tracker.is_active ? (
                           <Badge className="bg-green-500/10 text-green-600 hover:bg-green-500/20">Active</Badge>
                         ) : (
                           <Badge variant="secondary">Paused</Badge>
