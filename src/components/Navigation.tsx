@@ -1,8 +1,9 @@
-import { MapPin, LogOut, LayoutDashboard, User, Sun, Moon, Smartphone } from "lucide-react";
+import { MapPin, LogOut, LayoutDashboard, User, Sun, Moon, Smartphone, Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/hooks/useTheme";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,68 +13,84 @@ import {
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { useState } from "react";
 
 const Navigation = () => {
   const { theme, setTheme } = useTheme();
   const { user, signOut } = useAuth();
+  const isMobile = useIsMobile();
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   const getInitials = () => {
     if (!user?.email) return 'U';
     return user.email.charAt(0).toUpperCase();
   };
 
+  const ThemeToggle = () => (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon" className="h-10 w-10">
+          {theme === 'light' ? (
+            <Sun className="w-5 h-5" />
+          ) : theme === 'oled' ? (
+            <Smartphone className="w-5 h-5" />
+          ) : (
+            <Moon className="w-5 h-5" />
+          )}
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="bg-popover">
+        <DropdownMenuLabel>Display Mode</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => setTheme('light')} className={theme === 'light' ? 'bg-accent' : ''}>
+          <Sun className="w-4 h-4 mr-2" />
+          Light
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme('dark')} className={theme === 'dark' ? 'bg-accent' : ''}>
+          <Moon className="w-4 h-4 mr-2" />
+          Dark
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme('oled')} className={theme === 'oled' ? 'bg-accent' : ''}>
+          <Smartphone className="w-4 h-4 mr-2" />
+          OLED Black
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+
   return (
-    <nav className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+    <nav className="border-b bg-card/80 backdrop-blur-md sticky top-0 z-50 safe-area-top">
+      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+        {/* Logo */}
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center shadow-card group-hover:scale-105 transition-transform">
-            <MapPin className="w-5 h-5 text-primary-foreground" />
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-primary flex items-center justify-center shadow-card group-hover:scale-105 transition-transform">
+            <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-primary-foreground" />
           </div>
-          <div>
-            <h1 className="text-xl font-bold text-foreground">TrackView</h1>
-            <p className="text-xs text-muted-foreground">REAL-TIME TRACKING</p>
+          <div className="hidden xs:block">
+            <h1 className="text-lg sm:text-xl font-bold text-foreground leading-tight">TrackView</h1>
+            <p className="text-[10px] sm:text-xs text-muted-foreground leading-none">REAL-TIME TRACKING</p>
           </div>
         </Link>
         
-        <div className="flex items-center gap-2 sm:gap-4">
-          <Link to="/" className="hidden sm:block">
-            <Button variant="ghost">Home</Button>
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center gap-2">
+          <Link to="/">
+            <Button variant="ghost" className="h-10">Home</Button>
           </Link>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                {theme === 'light' ? (
-                  <Sun className="w-4 h-4" />
-                ) : theme === 'oled' ? (
-                  <Smartphone className="w-4 h-4" />
-                ) : (
-                  <Moon className="w-4 h-4" />
-                )}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Display Mode</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setTheme('light')} className={theme === 'light' ? 'bg-accent' : ''}>
-                <Sun className="w-4 h-4 mr-2" />
-                Light
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme('dark')} className={theme === 'dark' ? 'bg-accent' : ''}>
-                <Moon className="w-4 h-4 mr-2" />
-                Dark
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme('oled')} className={theme === 'oled' ? 'bg-accent' : ''}>
-                <Smartphone className="w-4 h-4 mr-2" />
-                OLED Black
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <ThemeToggle />
           
           {user ? (
             <>
               <Link to="/dashboard">
-                <Button variant="ghost" className="gap-2">
+                <Button variant="ghost" className="gap-2 h-10">
                   <LayoutDashboard className="w-4 h-4" />
                   Dashboard
                 </Button>
@@ -81,7 +98,7 @@ const Navigation = () => {
               
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="rounded-full">
+                  <Button variant="ghost" size="icon" className="rounded-full h-10 w-10">
                     <Avatar className="w-8 h-8">
                       <AvatarFallback className="bg-primary text-primary-foreground text-sm">
                         {getInitials()}
@@ -89,10 +106,10 @@ const Navigation = () => {
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuContent align="end" className="w-48 bg-popover">
                   <DropdownMenuItem className="text-muted-foreground text-sm">
                     <User className="w-4 h-4 mr-2" />
-                    {user.email}
+                    <span className="truncate">{user.email}</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={signOut} className="text-destructive">
@@ -105,12 +122,78 @@ const Navigation = () => {
           ) : (
             <>
               <Link to="/create">
-                <Button variant="ghost">Create Tracker</Button>
+                <Button variant="ghost" className="h-10">Create Tracker</Button>
               </Link>
               <Link to="/auth">
-                <Button>Sign In</Button>
+                <Button className="h-10">Sign In</Button>
               </Link>
             </>
+          )}
+        </div>
+
+        {/* Mobile/Tablet Navigation */}
+        <div className="flex md:hidden items-center gap-1">
+          <ThemeToggle />
+          
+          {user && (
+            <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-10 w-10">
+                  <Avatar className="w-8 h-8">
+                    <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+                      {getInitials()}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-72">
+                <SheetHeader>
+                  <SheetTitle className="text-left">Account</SheetTitle>
+                </SheetHeader>
+                <div className="mt-6 space-y-4">
+                  <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+                    <Avatar className="w-10 h-10">
+                      <AvatarFallback className="bg-primary text-primary-foreground">
+                        {getInitials()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{user.email}</p>
+                      <p className="text-xs text-muted-foreground">Signed in</p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-1">
+                    <Link to="/dashboard" onClick={() => setSheetOpen(false)}>
+                      <Button variant="ghost" className="w-full justify-start gap-2 h-11">
+                        <LayoutDashboard className="w-4 h-4" />
+                        Dashboard
+                      </Button>
+                    </Link>
+                  </div>
+                  
+                  <div className="pt-4 border-t">
+                    <Button 
+                      variant="ghost" 
+                      className="w-full justify-start gap-2 h-11 text-destructive hover:text-destructive hover:bg-destructive/10"
+                      onClick={() => {
+                        signOut();
+                        setSheetOpen(false);
+                      }}
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Sign Out
+                    </Button>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          )}
+          
+          {!user && !isMobile && (
+            <Link to="/auth">
+              <Button size="sm" className="h-9">Sign In</Button>
+            </Link>
           )}
         </div>
       </div>
