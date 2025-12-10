@@ -48,6 +48,8 @@ const MapView = () => {
 
   // Fetch initial locations and set up realtime subscription
   useEffect(() => {
+    if (!id) return;
+
     const fetchLocations = async () => {
       const { data, error: fetchError } = await supabase
         .from('location_updates')
@@ -67,9 +69,9 @@ const MapView = () => {
 
     fetchLocations();
 
-    // Subscribe to realtime updates
+    // Subscribe to realtime updates with unique channel name
     const channel = supabase
-      .channel('location-updates')
+      .channel(`location-updates-${id}`)
       .on(
         'postgres_changes',
         {
@@ -79,14 +81,18 @@ const MapView = () => {
           filter: `tracking_id=eq.${id}`
         },
         (payload) => {
+          console.log('Real-time location update received:', payload);
           const newLocation = payload.new as LocationUpdate;
           setLocations(prev => [...prev, newLocation]);
           setLastUpdate(newLocation.created_at);
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log('Realtime subscription status:', status);
+      });
 
     return () => {
+      console.log('Cleaning up realtime subscription');
       supabase.removeChannel(channel);
     };
   }, [id]);
