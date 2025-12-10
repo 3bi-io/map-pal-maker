@@ -120,7 +120,7 @@ const Auth = () => {
         title={isLogin ? 'Sign In - TrackView' : 'Create Account - TrackView'}
         description="Sign in or create an account to manage your location trackers."
       />
-      <div className="min-h-screen bg-gradient-background flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-background flex items-center justify-center p-4 safe-area-top safe-area-bottom">
         <Card className="w-full max-w-md shadow-elevated">
           <CardHeader className="text-center space-y-4">
             <div className="flex justify-center">

@@ -3,7 +3,7 @@ import { Copy, MapPin, RefreshCw, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import Navigation from "@/components/Navigation";
+import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
 
 const CreateTracker = () => {
@@ -65,23 +65,21 @@ const CreateTracker = () => {
         canonical="https://trackview.lovable.app/create"
         structuredData={structuredData}
       />
-      <div className="min-h-screen bg-gradient-background">
-        <Navigation />
-      
-      <main className="container mx-auto px-4 py-12">
-        <div className="max-w-3xl mx-auto space-y-8">
-          <div className="text-center space-y-4">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground">
-              Create Location Tracker
-            </h1>
-            <p className="text-lg text-muted-foreground">
-              Generate a unique tracking link that can be shared to monitor a device's location.
-            </p>
-          </div>
+      <Layout>
+        <main className="container mx-auto px-4 py-8 sm:py-12">
+          <div className="max-w-3xl mx-auto space-y-6 sm:space-y-8">
+            <div className="text-center space-y-3 sm:space-y-4">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground">
+                Create Location Tracker
+              </h1>
+              <p className="text-base sm:text-lg text-muted-foreground px-4">
+                Generate a unique tracking link that can be shared to monitor a device's location.
+              </p>
+            </div>
 
-          <Card className="p-6 md:p-8 shadow-elevated space-y-6">
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
+            <Card className="p-5 sm:p-6 md:p-8 shadow-elevated space-y-5 sm:space-y-6">
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
                 <MapPin className="w-5 h-5 text-primary" />
                 <h2 className="text-xl font-semibold">Your Tracking Link</h2>
               </div>
@@ -151,32 +149,32 @@ const CreateTracker = () => {
                 </Button>
               </div>
             </div>
-          </Card>
+            </Card>
 
-          <Card className="p-6 md:p-8 shadow-card bg-secondary/5 space-y-4">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center">
-                <span className="text-primary font-bold">ℹ</span>
+            <Card className="p-5 sm:p-6 md:p-8 shadow-card bg-secondary/5 space-y-4">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center">
+                  <span className="text-primary font-bold">ℹ</span>
+                </div>
+                <h3 className="text-base sm:text-lg font-semibold">Terminal Tracking Client</h3>
               </div>
-              <h3 className="text-lg font-semibold">Terminal Tracking Client</h3>
-            </div>
-            
-            <p className="text-sm text-muted-foreground">
-              To receive location updates in your terminal, you'll need to run the WebSocket server included in the project.
-            </p>
+              
+              <p className="text-sm text-muted-foreground">
+                To receive location updates in your terminal, you'll need to run the WebSocket server included in the project.
+              </p>
 
-            <div className="bg-secondary text-secondary-foreground rounded-lg p-4 font-mono text-sm space-y-2">
-              <div># 1. Navigate to the server directory</div>
-              <div>cd src/server</div>
-              <div className="pt-2"># 2. Install WebSocket dependency (if not already installed)</div>
-              <div>npm install ws</div>
-              <div className="pt-2"># 3. Run the server</div>
-              <div>node server.js</div>
-            </div>
-          </Card>
-        </div>
-      </main>
-      </div>
+              <div className="bg-secondary text-secondary-foreground rounded-lg p-3 sm:p-4 font-mono text-xs sm:text-sm space-y-2 overflow-x-auto">
+                <div># 1. Navigate to the server directory</div>
+                <div>cd src/server</div>
+                <div className="pt-2"># 2. Install WebSocket dependency (if not already installed)</div>
+                <div>npm install ws</div>
+                <div className="pt-2"># 3. Run the server</div>
+                <div>node server.js</div>
+              </div>
+            </Card>
+          </div>
+        </main>
+      </Layout>
     </>
   );
 };

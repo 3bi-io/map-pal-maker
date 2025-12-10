@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import Navigation from '@/components/Navigation';
+import Layout from '@/components/Layout';
 import { Card } from '@/components/ui/card';
 import { MapPin, Loader2, AlertCircle, Navigation as NavIcon } from 'lucide-react';
 import SEO from '@/components/SEO';
@@ -250,13 +250,11 @@ const MapView = () => {
         canonical={`https://trackview.lovable.app/map/${id}`}
         structuredData={structuredData}
       />
-      <div className="min-h-screen bg-gradient-background flex flex-col">
-        <Navigation />
-        
-        <main className="flex-1 container mx-auto px-4 py-6">
-          <div className="flex flex-col lg:flex-row gap-6 h-[calc(100vh-12rem)]">
+      <Layout showMobileNav={false}>
+        <main className="flex-1 container mx-auto px-4 py-4 sm:py-6">
+          <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 h-[calc(100vh-8rem)] lg:h-[calc(100vh-10rem)]">
             {/* Map Container */}
-            <div className="flex-1 relative rounded-xl overflow-hidden shadow-elevated min-h-[400px]">
+            <div className="flex-1 relative rounded-xl overflow-hidden shadow-elevated min-h-[300px] sm:min-h-[400px]">
               {loading && (
                 <div className="absolute inset-0 bg-background/80 flex items-center justify-center z-10">
                   <div className="text-center space-y-4">
@@ -280,7 +278,7 @@ const MapView = () => {
             </div>
 
             {/* Info Panel */}
-            <Card className="w-full lg:w-80 p-6 space-y-6 shadow-elevated overflow-auto">
+            <Card className="w-full lg:w-72 xl:w-80 p-4 sm:p-6 space-y-4 sm:space-y-6 shadow-elevated overflow-auto scrollbar-thin">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center">
                   <MapPin className="w-5 h-5 text-primary-foreground" />
@@ -348,7 +346,7 @@ const MapView = () => {
             </Card>
           </div>
         </main>
-      </div>
+      </Layout>
     </>
   );
 };

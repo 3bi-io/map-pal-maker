@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { MapPin, Plus, Copy, ExternalLink, Trash2, ToggleLeft, ToggleRight, Clock, Map, QrCode, Pencil, Check, X } from 'lucide-react';
+import { MapPin, Plus, Copy, Trash2, ToggleLeft, ToggleRight, Clock, Map, QrCode, Pencil, Check, X, MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -8,9 +8,10 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
-import Navigation from '@/components/Navigation';
+import Layout from '@/components/Layout';
 import SEO from '@/components/SEO';
 import QRCodeDialog from '@/components/QRCodeDialog';
+import { useIsMobile } from '@/hooks/use-mobile';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,6 +22,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface Tracker {
   id: string;
@@ -263,14 +271,18 @@ const Dashboard = () => {
   };
 
 
+  const isMobile = useIsMobile();
+
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-gradient-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 rounded-full bg-gradient-primary mx-auto mb-4 animate-pulse" />
-          <p className="text-muted-foreground">Loading...</p>
+      <Layout>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-12 h-12 rounded-full bg-gradient-primary mx-auto mb-4 animate-pulse" />
+            <p className="text-muted-foreground">Loading...</p>
+          </div>
         </div>
-      </div>
+      </Layout>
     );
   }
 
@@ -280,16 +292,14 @@ const Dashboard = () => {
         title="Dashboard - TrackView"
         description="Manage your location trackers from your dashboard."
       />
-      <div className="min-h-screen bg-gradient-background">
-        <Navigation />
-        
-        <main className="container mx-auto px-4 py-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+      <Layout>
+        <main className="container mx-auto px-4 py-6 sm:py-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
             <div>
-              <h1 className="text-3xl font-bold text-foreground">My Trackers</h1>
-              <p className="text-muted-foreground">Create and manage your location trackers</p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-foreground">My Trackers</h1>
+              <p className="text-sm sm:text-base text-muted-foreground">Create and manage your location trackers</p>
             </div>
-            <Button onClick={createTracker} className="gap-2 shadow-card">
+            <Button onClick={createTracker} className="gap-2 shadow-card w-full sm:w-auto">
               <Plus className="w-4 h-4" />
               New Tracker
             </Button>
@@ -310,7 +320,7 @@ const Dashboard = () => {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
               {trackers.map((tracker) => (
                 <Card key={tracker.id} className="shadow-card hover:shadow-elevated transition-shadow">
                   <CardHeader className="pb-3">
@@ -383,7 +393,8 @@ const Dashboard = () => {
                       )}
                     </div>
 
-                    <div className="flex flex-wrap gap-2">
+                    {/* Desktop actions */}
+                    <div className="hidden sm:flex flex-wrap gap-2">
                       <Button
                         variant="outline"
                         size="sm"
@@ -442,13 +453,66 @@ const Dashboard = () => {
                         <Trash2 className="w-3 h-3" />
                       </Button>
                     </div>
+
+                    {/* Mobile actions - Dropdown */}
+                    <div className="flex sm:hidden gap-2">
+                      <Link to={`/map/${tracker.tracking_id}`} className="flex-1">
+                        <Button variant="outline" size="sm" className="gap-1 w-full">
+                          <Map className="w-3 h-3" />
+                          View Map
+                        </Button>
+                      </Link>
+                      
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="outline" size="sm" className="px-2">
+                            <MoreVertical className="w-4 h-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48 bg-popover">
+                          <DropdownMenuItem onClick={() => setQrTracker(tracker)}>
+                            <QrCode className="w-4 h-4 mr-2" />
+                            Show QR Code
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => copyToClipboard(
+                            `${window.location.origin}/track/${tracker.tracking_id}`,
+                            'Tracking link'
+                          )}>
+                            <Copy className="w-4 h-4 mr-2" />
+                            Copy Link
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => toggleTracker(tracker.id, tracker.is_active)}>
+                            {tracker.is_active ? (
+                              <>
+                                <ToggleRight className="w-4 h-4 mr-2" />
+                                Pause Tracker
+                              </>
+                            ) : (
+                              <>
+                                <ToggleLeft className="w-4 h-4 mr-2" />
+                                Activate Tracker
+                              </>
+                            )}
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem 
+                            onClick={() => setDeleteTrackerId(tracker.id)}
+                            className="text-destructive focus:text-destructive"
+                          >
+                            <Trash2 className="w-4 h-4 mr-2" />
+                            Delete Tracker
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
           )}
         </main>
-      </div>
+      </Layout>
 
       <AlertDialog open={!!deleteTrackerId} onOpenChange={() => setDeleteTrackerId(null)}>
         <AlertDialogContent>

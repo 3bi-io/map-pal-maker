@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { MapPin, CheckCircle, Loader2, XCircle, AlertTriangle } from "lucide-react";
-import Navigation from "@/components/Navigation";
+import Layout from "@/components/Layout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -163,12 +163,14 @@ const TrackView = () => {
 
   if (checkingTracker) {
     return (
-      <div className="min-h-screen bg-gradient-background flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 text-primary mx-auto animate-spin mb-4" />
-          <p className="text-muted-foreground">Verifying tracker...</p>
+      <Layout>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <Loader2 className="w-12 h-12 text-primary mx-auto animate-spin mb-4" />
+            <p className="text-muted-foreground">Verifying tracker...</p>
+          </div>
         </div>
-      </div>
+      </Layout>
     );
   }
 
@@ -179,21 +181,20 @@ const TrackView = () => {
           title="Invalid Tracker | TrackView"
           description="This tracking link is invalid or has expired."
         />
-        <div className="min-h-screen bg-gradient-background">
-          <Navigation />
-          <main className="container mx-auto px-4 py-12">
+        <Layout>
+          <main className="container mx-auto px-4 py-8 sm:py-12">
             <div className="max-w-md mx-auto text-center space-y-6">
-              <div className="w-20 h-20 mx-auto rounded-full bg-destructive/10 flex items-center justify-center">
-                <AlertTriangle className="w-10 h-10 text-destructive" />
+              <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full bg-destructive/10 flex items-center justify-center">
+                <AlertTriangle className="w-8 h-8 sm:w-10 sm:h-10 text-destructive" />
               </div>
-              <h1 className="text-2xl font-bold text-foreground">Invalid Tracker</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-foreground">Invalid Tracker</h1>
               <p className="text-muted-foreground">{errorMessage}</p>
               <Link to="/">
                 <Button>Go to Home</Button>
               </Link>
             </div>
           </main>
-        </div>
+        </Layout>
       </>
     );
   }
@@ -207,39 +208,37 @@ const TrackView = () => {
         canonical={`https://trackview.lovable.app/track/${id}`}
         structuredData={structuredData}
       />
-      <div className="min-h-screen bg-gradient-background">
-        <Navigation />
-      
-      <main className="container mx-auto px-4 py-12">
-        <div className="max-w-2xl mx-auto space-y-6">
-          <div className="text-center space-y-2">
-            <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center shadow-elevated ${
-              status === "tracking" ? "bg-green-500" : 
-              status === "error" ? "bg-destructive" : 
-              "bg-gradient-primary"
-            }`}>
-              {status === "requesting" ? (
-                <Loader2 className="w-10 h-10 text-primary-foreground animate-spin" />
-              ) : status === "error" ? (
-                <XCircle className="w-10 h-10 text-destructive-foreground" />
-              ) : (
-                <MapPin className="w-10 h-10 text-primary-foreground" />
+      <Layout>
+        <main className="container mx-auto px-4 py-8 sm:py-12">
+          <div className="max-w-2xl mx-auto space-y-6">
+            <div className="text-center space-y-2">
+              <div className={`w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full flex items-center justify-center shadow-elevated ${
+                status === "tracking" ? "bg-green-500" : 
+                status === "error" ? "bg-destructive" : 
+                "bg-gradient-primary"
+              }`}>
+                {status === "requesting" ? (
+                  <Loader2 className="w-8 h-8 sm:w-10 sm:h-10 text-primary-foreground animate-spin" />
+                ) : status === "error" ? (
+                  <XCircle className="w-8 h-8 sm:w-10 sm:h-10 text-destructive-foreground" />
+                ) : (
+                  <MapPin className="w-8 h-8 sm:w-10 sm:h-10 text-primary-foreground" />
+                )}
+              </div>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground pt-4">
+                {status === "tracking" ? "Tracking Active" : 
+                 status === "error" ? "Tracking Error" : 
+                 "Enable Location Tracking"}
+              </h1>
+              {trackerInfo && (
+                <p className="text-base sm:text-lg text-muted-foreground">{trackerInfo.name}</p>
               )}
+              <p className="text-muted-foreground text-sm">
+                Tracking ID: <span className="font-mono text-primary">{id}</span>
+              </p>
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground pt-4">
-              {status === "tracking" ? "Tracking Active" : 
-               status === "error" ? "Tracking Error" : 
-               "Enable Location Tracking"}
-            </h1>
-            {trackerInfo && (
-              <p className="text-lg text-muted-foreground">{trackerInfo.name}</p>
-            )}
-            <p className="text-muted-foreground text-sm">
-              Tracking ID: <span className="font-mono text-primary">{id}</span>
-            </p>
-          </div>
 
-          <Card className="p-8 shadow-elevated space-y-6">
+            <Card className="p-6 sm:p-8 shadow-elevated space-y-6">
             {status === "tracking" && location && (
               <div className="p-4 bg-green-500/10 rounded-lg border border-green-500/20">
                 <p className="text-sm font-medium text-green-700 dark:text-green-400 mb-2">
@@ -319,10 +318,10 @@ const TrackView = () => {
                 )}
               </Button>
             )}
-          </Card>
-        </div>
-      </main>
-      </div>
+            </Card>
+          </div>
+        </main>
+      </Layout>
     </>
   );
 };
