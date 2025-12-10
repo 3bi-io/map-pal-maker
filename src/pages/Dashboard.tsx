@@ -1,6 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { MapPin, Plus, Copy, Trash2, ToggleLeft, ToggleRight, Clock, Map, QrCode, Pencil, Check, X, MoreVertical } from 'lucide-react';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
+import { PullToRefreshIndicator, PullToRefreshContainer } from '@/components/PullToRefresh';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -273,6 +275,18 @@ const Dashboard = () => {
 
   const isMobile = useIsMobile();
 
+  const handleRefresh = useCallback(async () => {
+    await fetchTrackers();
+  }, []);
+
+  const {
+    containerRef,
+    pullDistance,
+    isRefreshing,
+    progress,
+    shouldTrigger,
+  } = usePullToRefresh({ onRefresh: handleRefresh });
+
   if (authLoading || loading) {
     return (
       <Layout>
@@ -293,7 +307,14 @@ const Dashboard = () => {
         description="Manage your location trackers from your dashboard."
       />
       <Layout>
-        <main className="container mx-auto px-4 py-6 sm:py-8">
+        <PullToRefreshContainer ref={containerRef} className="sm:overflow-visible">
+          <PullToRefreshIndicator
+            pullDistance={pullDistance}
+            isRefreshing={isRefreshing}
+            progress={progress}
+            shouldTrigger={shouldTrigger}
+          />
+          <main className="container mx-auto px-4 py-6 sm:py-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-foreground">My Trackers</h1>
@@ -512,6 +533,7 @@ const Dashboard = () => {
             </div>
           )}
         </main>
+        </PullToRefreshContainer>
       </Layout>
 
       <AlertDialog open={!!deleteTrackerId} onOpenChange={() => setDeleteTrackerId(null)}>
