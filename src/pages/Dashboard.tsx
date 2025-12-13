@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { MapPin, Plus, Copy, Trash2, ToggleLeft, ToggleRight, Clock, Map, QrCode, Pencil, Check, X, MoreVertical } from 'lucide-react';
+import { MapPin, Plus, Copy, Trash2, ToggleLeft, ToggleRight, Clock, Map, QrCode, Pencil, Check, X, MoreVertical, RefreshCw } from 'lucide-react';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { PullToRefreshIndicator, PullToRefreshContainer } from '@/components/PullToRefresh';
 import { Button } from '@/components/ui/button';
@@ -320,10 +320,22 @@ const Dashboard = () => {
               <h1 className="text-2xl sm:text-3xl font-bold text-foreground">My Trackers</h1>
               <p className="text-sm sm:text-base text-muted-foreground">Create and manage your location trackers</p>
             </div>
-            <Button onClick={createTracker} className="gap-2 shadow-card w-full sm:w-auto">
-              <Plus className="w-4 h-4" />
-              New Tracker
-            </Button>
+            <div className="flex gap-2 w-full sm:w-auto">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+                className="hidden sm:flex shadow-card"
+                title="Refresh trackers"
+              >
+                <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              </Button>
+              <Button onClick={createTracker} className="gap-2 shadow-card flex-1 sm:flex-none">
+                <Plus className="w-4 h-4" />
+                New Tracker
+              </Button>
+            </div>
           </div>
 
           {trackers.length === 0 ? (
