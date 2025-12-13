@@ -49,6 +49,7 @@ const Dashboard = () => {
   const [qrTracker, setQrTracker] = useState<Tracker | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
+  const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
   const editInputRef = useRef<HTMLInputElement>(null);
   
   const { user, loading: authLoading } = useAuth();
@@ -95,6 +96,7 @@ const Dashboard = () => {
       );
 
       setTrackers(trackersWithStats);
+      setLastRefresh(new Date());
     } catch (error) {
       console.error('Error fetching trackers:', error);
       toast({
@@ -318,7 +320,14 @@ const Dashboard = () => {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-foreground">My Trackers</h1>
-              <p className="text-sm sm:text-base text-muted-foreground">Create and manage your location trackers</p>
+              <p className="text-sm sm:text-base text-muted-foreground">
+                Create and manage your location trackers
+                {lastRefresh && (
+                  <span className="hidden sm:inline text-xs ml-2 text-muted-foreground/70">
+                    · Updated {lastRefresh.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                )}
+              </p>
             </div>
             <div className="flex gap-2 w-full sm:w-auto">
               <Button
