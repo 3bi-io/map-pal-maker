@@ -4,9 +4,12 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import Layout from '@/components/Layout';
 import { Card } from '@/components/ui/card';
-import { MapPin, Loader2, AlertCircle, Navigation as NavIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { MapPin, Loader2, AlertCircle, Navigation as NavIcon, Crosshair } from 'lucide-react';
 import SEO from '@/components/SEO';
 import { supabase } from '@/integrations/supabase/client';
+import { useTheme } from '@/hooks/useTheme';
+import { formatTime } from '@/lib/tracker-utils';
 
 interface LocationUpdate {
   id: string;
@@ -26,6 +29,7 @@ const MapView = () => {
   const [error, setError] = useState<string | null>(null);
   const [locations, setLocations] = useState<LocationUpdate[]>([]);
   const [lastUpdate, setLastUpdate] = useState<string | null>(null);
+  const { theme } = useTheme();
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -46,6 +50,14 @@ const MapView = () => {
     ]
   };
 
+  // Get mapbox style based on theme
+  const getMapStyle = () => {
+    if (theme === 'dark' || theme === 'oled') {
+      return 'mapbox://styles/mapbox/dark-v11';
+    }
+    return 'mapbox://styles/mapbox/light-v11';
+  };
+
   // Fetch initial locations and set up realtime subscription
   useEffect(() => {
     if (!id) return;
@@ -57,9 +69,7 @@ const MapView = () => {
         .eq('tracking_id', id)
         .order('created_at', { ascending: true });
 
-      if (fetchError) {
-        console.error('Error fetching locations:', fetchError);
-      } else if (data) {
+      if (!fetchError && data) {
         setLocations(data);
         if (data.length > 0) {
           setLastUpdate(data[data.length - 1].created_at);
@@ -69,7 +79,7 @@ const MapView = () => {
 
     fetchLocations();
 
-    // Subscribe to realtime updates with unique channel name
+    // Subscribe to realtime updates
     const channel = supabase
       .channel(`location-updates-${id}`)
       .on(
@@ -81,18 +91,14 @@ const MapView = () => {
           filter: `tracking_id=eq.${id}`
         },
         (payload) => {
-          console.log('Real-time location update received:', payload);
           const newLocation = payload.new as LocationUpdate;
           setLocations(prev => [...prev, newLocation]);
           setLastUpdate(newLocation.created_at);
         }
       )
-      .subscribe((status) => {
-        console.log('Realtime subscription status:', status);
-      });
+      .subscribe();
 
     return () => {
-      console.log('Cleaning up realtime subscription');
       supabase.removeChannel(channel);
     };
   }, [id]);
@@ -118,7 +124,7 @@ const MapView = () => {
 
         map.current = new mapboxgl.Map({
           container: mapContainer.current,
-          style: 'mapbox://styles/mapbox/dark-v11',
+          style: getMapStyle(),
           center,
           zoom: latestLocation ? 15 : 3,
           pitch: 45,
@@ -144,7 +150,6 @@ const MapView = () => {
         });
 
       } catch (err) {
-        console.error('Map initialization error:', err);
         setError(err instanceof Error ? err.message : 'Failed to load map');
         setLoading(false);
       }
@@ -157,6 +162,13 @@ const MapView = () => {
       map.current?.remove();
     };
   }, []);
+
+  // Update map style when theme changes
+  useEffect(() => {
+    if (map.current && !loading) {
+      map.current.setStyle(getMapStyle());
+    }
+  }, [theme, loading]);
 
   // Update map when locations change
   useEffect(() => {
@@ -185,7 +197,6 @@ const MapView = () => {
     if (!map.current) return;
 
     const el = document.createElement('div');
-    el.className = 'w-8 h-8 bg-primary rounded-full border-4 border-white shadow-lg flex items-center justify-center';
     el.style.cssText = 'width: 32px; height: 32px; background: #3b82f6; border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
 
     marker.current = new mapboxgl.Marker(el)
@@ -237,8 +248,14 @@ const MapView = () => {
     }
   };
 
-  const formatTime = (dateString: string) => {
-    return new Date(dateString).toLocaleTimeString();
+  const centerOnLatest = () => {
+    if (!map.current || locations.length === 0) return;
+    const latest = locations[locations.length - 1];
+    map.current.flyTo({
+      center: [latest.longitude, latest.latitude],
+      zoom: 15,
+      duration: 1000
+    });
   };
 
   return (
@@ -275,6 +292,20 @@ const MapView = () => {
               )}
 
               <div ref={mapContainer} className="absolute inset-0" />
+              
+              {/* Map Controls */}
+              {!loading && !error && locations.length > 0 && (
+                <div className="absolute bottom-4 left-4 z-10">
+                  <Button
+                    size="sm"
+                    onClick={centerOnLatest}
+                    className="gap-2 shadow-lg"
+                  >
+                    <Crosshair className="w-4 h-4" />
+                    Center on Latest
+                  </Button>
+                </div>
+              )}
             </div>
 
             {/* Info Panel */}

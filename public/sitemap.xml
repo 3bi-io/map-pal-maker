@@ -6,18 +6,26 @@
   
   <!-- Homepage -->
   <url>
-    <loc>https://geofollower.lovable.app/</loc>
-    <lastmod>2025-01-01</lastmod>
+    <loc>https://trackview.lovable.app/</loc>
+    <lastmod>2025-01-02</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   
-  <!-- Create Tracker Page -->
+  <!-- Dashboard -->
   <url>
-    <loc>https://geofollower.lovable.app/create</loc>
-    <lastmod>2025-01-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://trackview.lovable.app/dashboard</loc>
+    <lastmod>2025-01-02</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Auth -->
+  <url>
+    <loc>https://trackview.lovable.app/auth</loc>
+    <lastmod>2025-01-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 
 </urlset>
