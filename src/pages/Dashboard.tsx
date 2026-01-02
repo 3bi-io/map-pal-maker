@@ -13,7 +13,10 @@ import { supabase } from '@/integrations/supabase/client';
 import Layout from '@/components/Layout';
 import SEO from '@/components/SEO';
 import QRCodeDialog from '@/components/QRCodeDialog';
+import ShareButton from '@/components/ShareButton';
+import TrackerCardSkeleton from '@/components/TrackerCardSkeleton';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { formatDate, getTrackingUrl } from '@/lib/tracker-utils';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -55,6 +58,7 @@ const Dashboard = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -109,7 +113,6 @@ const Dashboard = () => {
       setTrackers(trackersWithStats);
       setLastRefresh(new Date());
     } catch (error) {
-      console.error('Error fetching trackers:', error);
       toast({
         title: 'Error',
         description: 'Failed to load trackers',
@@ -152,7 +155,6 @@ const Dashboard = () => {
 
       fetchTrackers();
     } catch (error) {
-      console.error('Error creating tracker:', error);
       toast({
         title: 'Error',
         description: 'Failed to create tracker',
@@ -179,7 +181,6 @@ const Dashboard = () => {
         description: currentStatus ? 'Location updates will be ignored.' : 'Now accepting location updates.',
       });
     } catch (error) {
-      console.error('Error toggling tracker:', error);
       toast({
         title: 'Error',
         description: 'Failed to update tracker',
@@ -206,7 +207,6 @@ const Dashboard = () => {
         description: 'The tracker and all its data have been removed.',
       });
     } catch (error) {
-      console.error('Error deleting tracker:', error);
       toast({
         title: 'Error',
         description: 'Failed to delete tracker',
@@ -256,7 +256,6 @@ const Dashboard = () => {
         description: 'Tracker name updated successfully.',
       });
     } catch (error) {
-      console.error('Error renaming tracker:', error);
       toast({
         title: 'Error',
         description: 'Failed to rename tracker',
@@ -276,18 +275,6 @@ const Dashboard = () => {
     });
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
-
-
-  const isMobile = useIsMobile();
-
   const handleRefresh = useCallback(async () => {
     await fetchTrackers();
   }, []);
@@ -300,7 +287,7 @@ const Dashboard = () => {
     shouldTrigger,
   } = usePullToRefresh({ onRefresh: handleRefresh });
 
-  if (authLoading || loading) {
+  if (authLoading) {
     return (
       <Layout>
         <div className="flex-1 flex items-center justify-center">
@@ -358,7 +345,13 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {trackers.length === 0 ? (
+          {loading ? (
+            <div className="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {[1, 2, 3].map((i) => (
+                <TrackerCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : trackers.length === 0 ? (
             <Card className="text-center py-12 shadow-card">
               <CardContent>
                 <div className="w-16 h-16 rounded-full bg-muted mx-auto mb-4 flex items-center justify-center">
@@ -458,18 +451,12 @@ const Dashboard = () => {
                         QR Code
                       </Button>
 
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => copyToClipboard(
-                          `${window.location.origin}/track/${tracker.tracking_id}`,
-                          'Tracking link'
-                        )}
-                        className="gap-1"
-                      >
-                        <Copy className="w-3 h-3" />
-                        Copy Link
-                      </Button>
+                      <ShareButton
+                        url={getTrackingUrl(tracker.tracking_id)}
+                        title={tracker.name}
+                        text="Track location with this link"
+                        onSuccess={() => toast({ title: 'Shared!', description: 'Tracking link shared.' })}
+                      />
                       
                       <Link to={`/map/${tracker.tracking_id}`}>
                         <Button variant="outline" size="sm" className="gap-1">
@@ -528,7 +515,7 @@ const Dashboard = () => {
                             Show QR Code
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => copyToClipboard(
-                            `${window.location.origin}/track/${tracker.tracking_id}`,
+                            getTrackingUrl(tracker.tracking_id),
                             'Tracking link'
                           )}>
                             <Copy className="w-4 h-4 mr-2" />
@@ -589,7 +576,7 @@ const Dashboard = () => {
       <QRCodeDialog
         open={!!qrTracker}
         onOpenChange={(open) => !open && setQrTracker(null)}
-        url={qrTracker ? `${window.location.origin}/track/${qrTracker.tracking_id}` : ''}
+        url={qrTracker ? getTrackingUrl(qrTracker.tracking_id) : ''}
         title={qrTracker?.name || 'Tracker'}
       />
     </>

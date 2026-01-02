@@ -83,8 +83,6 @@ const TrackView = () => {
       });
 
     if (error) {
-      console.error('Failed to save location:', error);
-      // Check if tracker was deactivated
       if (error.message?.includes('violates row-level security')) {
         setStatus("error");
         setErrorMessage("This tracker has been paused or deleted.");
