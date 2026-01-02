@@ -68,6 +68,17 @@ const Dashboard = () => {
     }
   }, [user]);
 
+  // Auto-refresh every 30 seconds
+  useEffect(() => {
+    if (!user) return;
+    
+    const interval = setInterval(() => {
+      fetchTrackers();
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [user]);
+
   const fetchTrackers = async () => {
     try {
       const { data: trackersData, error } = await supabase
