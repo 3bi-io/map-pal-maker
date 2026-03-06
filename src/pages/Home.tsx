@@ -81,38 +81,39 @@ const Home = () => {
       />
       <Layout showFooter>
         <main className="container mx-auto px-4">
-          <section className="py-12 sm:py-20 md:py-32 text-center space-y-6 sm:space-y-8">
+          {/* Hero Section */}
+          <section className="py-10 sm:py-20 md:py-32 text-center space-y-5 sm:space-y-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full text-sm text-primary font-medium">
-              <MapPin className="w-4 h-4" />
+              <MapPin className="w-4 h-4" aria-hidden="true" />
               Location Tracking Made Simple
             </div>
             
-            <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-foreground max-w-4xl mx-auto leading-tight">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-foreground max-w-4xl mx-auto leading-tight">
               Track Locations in Real-Time
             </h1>
             
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
+            <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto px-2">
               Generate unique tracking links and monitor device locations with ease. Perfect for development, testing, and location-based applications.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-4 px-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-4 px-2">
               {user ? (
                 <Link to="/dashboard" className="w-full sm:w-auto">
-                  <Button size="lg" className="gap-2 text-base sm:text-lg px-6 sm:px-8 shadow-elevated w-full sm:w-auto">
-                    <MapPin className="w-5 h-5" />
+                  <Button size="lg" className="gap-2 text-base sm:text-lg px-6 sm:px-8 shadow-elevated w-full sm:w-auto h-12 sm:h-auto">
+                    <MapPin className="w-5 h-5" aria-hidden="true" />
                     Go to Dashboard
                   </Button>
                 </Link>
               ) : (
                 <>
                   <Link to="/auth" className="w-full sm:w-auto">
-                    <Button size="lg" className="gap-2 text-base sm:text-lg px-6 sm:px-8 shadow-elevated w-full sm:w-auto">
-                      <MapPin className="w-5 h-5" />
+                    <Button size="lg" className="gap-2 text-base sm:text-lg px-6 sm:px-8 shadow-elevated w-full sm:w-auto h-12 sm:h-auto">
+                      <MapPin className="w-5 h-5" aria-hidden="true" />
                       Get Started
                     </Button>
                   </Link>
                   <Link to="/auth" className="w-full sm:w-auto">
-                    <Button size="lg" variant="outline" className="gap-2 text-base sm:text-lg px-6 sm:px-8 w-full sm:w-auto">
+                    <Button size="lg" variant="outline" className="gap-2 text-base sm:text-lg px-6 sm:px-8 w-full sm:w-auto h-12 sm:h-auto">
                       Sign In
                     </Button>
                   </Link>
@@ -121,29 +122,31 @@ const Home = () => {
             </div>
           </section>
 
-          <section className="py-12 sm:py-20 grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto">
+          {/* Features Section */}
+          <section className="py-10 sm:py-20 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto" aria-label="Features">
             {features.map((feature, index) => (
-              <Card key={index} className="p-5 sm:p-6 space-y-3 sm:space-y-4 shadow-card hover:shadow-elevated transition-shadow">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-primary flex items-center justify-center">
-                  <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary-foreground" />
+              <Card key={index} className="p-5 sm:p-6 space-y-3 sm:space-y-4 shadow-card hover:shadow-elevated transition-shadow rounded-xl">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-primary flex items-center justify-center">
+                  <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary-foreground" aria-hidden="true" />
                 </div>
-                <h3 className="text-lg sm:text-xl font-semibold">{feature.title}</h3>
-                <p className="text-sm sm:text-base text-muted-foreground">{feature.description}</p>
+                <h2 className="text-lg sm:text-xl font-semibold">{feature.title}</h2>
+                <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{feature.description}</p>
               </Card>
             ))}
           </section>
 
-          <section className="py-12 sm:py-20 text-center px-4">
-            <Card className="max-w-3xl mx-auto p-8 sm:p-12 shadow-elevated bg-gradient-primary text-primary-foreground">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">
+          {/* CTA Section */}
+          <section className="py-10 sm:py-20 text-center px-2" aria-label="Call to action">
+            <Card className="max-w-3xl mx-auto p-6 sm:p-12 shadow-elevated bg-gradient-primary text-primary-foreground rounded-xl">
+              <h2 className="text-xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">
                 Ready to Start Tracking?
               </h2>
-              <p className="text-base sm:text-lg opacity-90 mb-6 sm:mb-8">
+              <p className="text-sm sm:text-lg opacity-90 mb-5 sm:mb-8">
                 Create your first tracking link in seconds and start monitoring locations.
               </p>
-              <Link to={user ? "/dashboard" : "/auth"}>
-                <Button size="lg" variant="secondary" className="gap-2 text-base sm:text-lg px-6 sm:px-8">
-                  <MapPin className="w-5 h-5" />
+              <Link to={user ? "/dashboard" : "/auth"} className="inline-block w-full sm:w-auto">
+                <Button size="lg" variant="secondary" className="gap-2 text-base sm:text-lg px-6 sm:px-8 w-full sm:w-auto h-12 sm:h-auto">
+                  <MapPin className="w-5 h-5" aria-hidden="true" />
                   {user ? "Go to Dashboard" : "Get Started Now"}
                 </Button>
               </Link>

@@ -5,7 +5,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import Layout from '@/components/Layout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { MapPin, Loader2, AlertCircle, Navigation as NavIcon, Crosshair } from 'lucide-react';
+import { MapPin, Loader2, AlertCircle, Navigation as NavIcon, Crosshair, ChevronUp, ChevronDown } from 'lucide-react';
 import SEO from '@/components/SEO';
 import { supabase } from '@/integrations/supabase/client';
 import { useTheme } from '@/hooks/useTheme';
@@ -31,7 +31,7 @@ const MapView = () => {
   const [error, setError] = useState<string | null>(null);
   const [locations, setLocations] = useState<LocationUpdate[]>([]);
   const [lastUpdate, setLastUpdate] = useState<string | null>(null);
-  const [infoPanelOpen, setInfoPanelOpen] = useState(true);
+  const [bottomSheetExpanded, setBottomSheetExpanded] = useState(false);
   const { theme } = useTheme();
   const isMobile = useIsMobile();
 
@@ -90,14 +90,11 @@ const MapView = () => {
 
   const restoreMapLayers = useCallback(() => {
     if (!map.current) return;
-    // Re-add path
     if (locationsRef.current.length > 1) {
-      // Remove old source/layer if lingering
       if (map.current.getLayer('route')) map.current.removeLayer('route');
       if (map.current.getSource('route')) map.current.removeSource('route');
       addPathToMap();
     }
-    // Marker persists through style changes (it's a DOM element)
   }, [addPathToMap]);
 
   // Fetch locations + realtime
@@ -159,7 +156,10 @@ const MapView = () => {
           pitch: 45,
         });
 
-        map.current.addControl(new mapboxgl.NavigationControl({ visualizePitch: true }), 'top-right');
+        map.current.addControl(
+          new mapboxgl.NavigationControl({ visualizePitch: true }), 
+          isMobile ? 'top-left' : 'top-right'
+        );
 
         map.current.on('load', () => {
           setLoading(false);
@@ -167,7 +167,6 @@ const MapView = () => {
           if (latestLocation) addMarker(latestLocation.longitude, latestLocation.latitude);
         });
 
-        // Restore layers after style changes (theme switch)
         map.current.on('style.load', () => {
           restoreMapLayers();
         });
@@ -219,6 +218,78 @@ const MapView = () => {
     map.current.flyTo({ center: [latest.longitude, latest.latitude], zoom: 15, duration: 1000 });
   };
 
+  // Mobile bottom sheet info panel
+  const MobileInfoPanel = () => (
+    <div 
+      className={`fixed bottom-0 left-0 right-0 z-30 transition-transform duration-300 ease-out ${
+        bottomSheetExpanded ? 'translate-y-0' : 'translate-y-[calc(100%-4.5rem)]'
+      }`}
+      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+    >
+      <div className="bg-card/95 backdrop-blur-md rounded-t-2xl shadow-elevated border-t">
+        {/* Handle bar */}
+        <button
+          onClick={() => setBottomSheetExpanded(!bottomSheetExpanded)}
+          className="w-full flex flex-col items-center pt-2 pb-1 touch-manipulation"
+          aria-label={bottomSheetExpanded ? 'Collapse info panel' : 'Expand info panel'}
+        >
+          <div className="w-10 h-1 rounded-full bg-muted-foreground/30 mb-2" />
+          <div className="flex items-center gap-2 px-4 w-full">
+            <div className="flex items-center gap-2 flex-1">
+              <div className={`w-2 h-2 rounded-full ${locations.length > 0 ? 'bg-green-500 animate-pulse' : 'bg-yellow-500'}`} />
+              <span className="font-medium text-sm">
+                {locations.length > 0 ? `${locations.length} points` : 'Waiting...'}
+              </span>
+              {lastUpdate && (
+                <span className="text-xs text-muted-foreground">· {formatTime(lastUpdate)}</span>
+              )}
+            </div>
+            {bottomSheetExpanded ? (
+              <ChevronDown className="w-4 h-4 text-muted-foreground" />
+            ) : (
+              <ChevronUp className="w-4 h-4 text-muted-foreground" />
+            )}
+          </div>
+        </button>
+
+        {/* Expanded content */}
+        <div className="px-4 pb-4 space-y-3 max-h-[50vh] overflow-auto scrollbar-thin">
+          <div className="p-3 bg-muted rounded-xl">
+            <p className="text-xs text-muted-foreground mb-1">Tracking ID</p>
+            <p className="font-mono text-xs">{id}</p>
+          </div>
+
+          {locations.length > 0 && (
+            <div className="p-3 bg-muted rounded-xl">
+              <p className="text-xs text-muted-foreground mb-1">Latest Position</p>
+              <p className="font-mono text-xs">
+                {locations[locations.length - 1].latitude.toFixed(6)},
+                {locations[locations.length - 1].longitude.toFixed(6)}
+              </p>
+            </div>
+          )}
+
+          {locations.length > 0 && (
+            <div className="space-y-2">
+              <h3 className="text-xs font-medium flex items-center gap-2">
+                <NavIcon className="w-3 h-3" />
+                Recent Updates
+              </h3>
+              <div className="space-y-1.5">
+                {locations.slice(-5).reverse().map((loc) => (
+                  <div key={loc.id} className="text-xs p-2 bg-muted/50 rounded-lg">
+                    <span className="text-muted-foreground">{formatTime(loc.created_at)}</span>
+                    <p className="font-mono">{loc.latitude.toFixed(4)}, {loc.longitude.toFixed(4)}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <>
       <SEO
@@ -227,10 +298,14 @@ const MapView = () => {
         canonical={`https://trackview.lovable.app/map/${id}`}
       />
       <Layout showMobileNav={false}>
-        <main className="flex-1 container mx-auto px-2 sm:px-4 py-2 sm:py-4">
-          <div className="flex flex-col lg:flex-row gap-2 sm:gap-4 h-[calc(100vh-5rem)] sm:h-[calc(100vh-8rem)] lg:h-[calc(100vh-10rem)]">
+        <main className={`flex-1 ${isMobile ? '' : 'container mx-auto px-2 sm:px-4 py-2 sm:py-4'}`}>
+          <div className={`flex flex-col lg:flex-row gap-2 sm:gap-4 ${
+            isMobile 
+              ? 'h-[100dvh] fixed inset-0 top-[57px]' 
+              : 'h-[calc(100vh-8rem)] lg:h-[calc(100vh-10rem)]'
+          }`}>
             {/* Map */}
-            <div className="flex-1 relative rounded-xl overflow-hidden shadow-elevated min-h-[250px]">
+            <div className={`flex-1 relative ${isMobile ? '' : 'rounded-xl'} overflow-hidden shadow-elevated min-h-[250px]`}>
               {loading && (
                 <div className="absolute inset-0 bg-background/80 flex items-center justify-center z-10">
                   <div className="text-center space-y-4">
@@ -242,7 +317,7 @@ const MapView = () => {
               
               {error && (
                 <div className="absolute inset-0 bg-background flex items-center justify-center z-10">
-                  <Card className="p-8 max-w-md text-center space-y-4">
+                  <Card className="p-8 max-w-md text-center space-y-4 mx-4 rounded-xl">
                     <AlertCircle className="w-12 h-12 text-destructive mx-auto" />
                     <h2 className="text-xl font-semibold">Map Error</h2>
                     <p className="text-muted-foreground">{error}</p>
@@ -253,33 +328,26 @@ const MapView = () => {
               <div ref={mapContainer} className="absolute inset-0" />
               
               {/* Map Controls */}
-              {!loading && !error && (
-                <div className="absolute bottom-4 left-4 z-10 flex gap-2">
-                  {locations.length > 0 && (
-                    <Button size="sm" onClick={centerOnLatest} className="gap-2 shadow-lg">
-                      <Crosshair className="w-4 h-4" />
-                      <span className="hidden sm:inline">Center on Latest</span>
-                    </Button>
-                  )}
-                  {isMobile && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => setInfoPanelOpen(!infoPanelOpen)}
-                      className="shadow-lg bg-card"
-                    >
-                      {infoPanelOpen ? 'Hide Info' : 'Show Info'}
-                    </Button>
-                  )}
+              {!loading && !error && locations.length > 0 && (
+                <div className={`absolute z-10 flex gap-2 ${
+                  isMobile ? 'bottom-20 right-4' : 'bottom-4 left-4'
+                }`}>
+                  <Button 
+                    size="sm" 
+                    onClick={centerOnLatest} 
+                    className="gap-2 shadow-lg rounded-full"
+                    aria-label="Center on latest location"
+                  >
+                    <Crosshair className="w-4 h-4" />
+                    {!isMobile && <span>Center</span>}
+                  </Button>
                 </div>
               )}
             </div>
 
-            {/* Info Panel - collapsible on mobile */}
-            {(!isMobile || infoPanelOpen) && (
-              <Card className={`w-full lg:w-72 xl:w-80 p-4 sm:p-6 space-y-4 sm:space-y-6 shadow-elevated overflow-auto scrollbar-thin ${
-                isMobile ? 'max-h-60' : ''
-              }`}>
+            {/* Desktop Info Panel */}
+            {!isMobile && (
+              <Card className="w-full lg:w-72 xl:w-80 p-4 sm:p-6 space-y-4 sm:space-y-6 shadow-elevated overflow-auto scrollbar-thin rounded-xl">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center">
                     <MapPin className="w-5 h-5 text-primary-foreground" />
@@ -291,7 +359,7 @@ const MapView = () => {
                 </div>
 
                 <div className="space-y-3 sm:space-y-4">
-                  <div className="p-3 sm:p-4 bg-muted rounded-lg">
+                  <div className="p-3 sm:p-4 bg-muted rounded-xl">
                     <p className="text-sm text-muted-foreground mb-1">Status</p>
                     <div className="flex items-center gap-2">
                       <div className={`w-2 h-2 rounded-full ${locations.length > 0 ? 'bg-green-500 animate-pulse' : 'bg-yellow-500'}`} />
@@ -301,20 +369,20 @@ const MapView = () => {
                     </div>
                   </div>
 
-                  <div className="p-3 sm:p-4 bg-muted rounded-lg">
+                  <div className="p-3 sm:p-4 bg-muted rounded-xl">
                     <p className="text-sm text-muted-foreground mb-1">Location Points</p>
                     <p className="font-medium text-2xl">{locations.length}</p>
                   </div>
 
                   {lastUpdate && (
-                    <div className="p-3 sm:p-4 bg-muted rounded-lg">
+                    <div className="p-3 sm:p-4 bg-muted rounded-xl">
                       <p className="text-sm text-muted-foreground mb-1">Last Update</p>
                       <p className="font-medium">{formatTime(lastUpdate)}</p>
                     </div>
                   )}
 
                   {locations.length > 0 && (
-                    <div className="p-3 sm:p-4 bg-muted rounded-lg">
+                    <div className="p-3 sm:p-4 bg-muted rounded-xl">
                       <p className="text-sm text-muted-foreground mb-1">Latest Position</p>
                       <p className="font-mono text-xs">
                         {locations[locations.length - 1].latitude.toFixed(6)},
@@ -324,7 +392,7 @@ const MapView = () => {
                   )}
                 </div>
 
-                {locations.length > 0 && !isMobile && (
+                {locations.length > 0 && (
                   <div className="space-y-2">
                     <h3 className="text-sm font-medium flex items-center gap-2">
                       <NavIcon className="w-4 h-4" />
@@ -332,7 +400,7 @@ const MapView = () => {
                     </h3>
                     <div className="max-h-48 overflow-auto space-y-2">
                       {locations.slice(-5).reverse().map((loc) => (
-                        <div key={loc.id} className="text-xs p-2 bg-muted/50 rounded">
+                        <div key={loc.id} className="text-xs p-2 bg-muted/50 rounded-lg">
                           <span className="text-muted-foreground">{formatTime(loc.created_at)}</span>
                           <p className="font-mono">{loc.latitude.toFixed(4)}, {loc.longitude.toFixed(4)}</p>
                         </div>
@@ -343,6 +411,9 @@ const MapView = () => {
               </Card>
             )}
           </div>
+
+          {/* Mobile bottom sheet */}
+          {isMobile && !loading && !error && <MobileInfoPanel />}
         </main>
       </Layout>
     </>
