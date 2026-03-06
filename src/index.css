@@ -194,6 +194,62 @@ All colors MUST be HSL.
   transition: opacity 200ms ease-out, transform 200ms ease-out;
 }
 
+/* Mapbox tooltip styling */
+.map-tooltip .mapboxgl-popup-content {
+  background: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+  border-radius: 0.75rem;
+  padding: 8px 12px;
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.15);
+  border: 1px solid hsl(var(--border) / 0.5);
+  font-family: inherit;
+}
+
+.map-tooltip .mapboxgl-popup-tip {
+  border-top-color: hsl(var(--card));
+}
+
+.measure-popup .mapboxgl-popup-content {
+  background: hsl(var(--destructive));
+  color: hsl(var(--destructive-foreground));
+  border-radius: 0.5rem;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.measure-popup .mapboxgl-popup-tip {
+  border-top-color: hsl(var(--destructive));
+}
+
+/* Mapbox controls theme override */
+.mapboxgl-ctrl-group {
+  background: hsl(var(--card) / 0.9) !important;
+  backdrop-filter: blur(12px);
+  border: 1px solid hsl(var(--border) / 0.5) !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.1) !important;
+}
+
+.mapboxgl-ctrl-group button {
+  border-color: hsl(var(--border) / 0.3) !important;
+}
+
+.mapboxgl-ctrl-group button span {
+  filter: var(--mapbox-ctrl-filter, none);
+}
+
+.dark .mapboxgl-ctrl-group button span,
+.oled .mapboxgl-ctrl-group button span {
+  filter: invert(1);
+}
+
+/* Pulse animation for map markers */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.8); opacity: 0; }
+}
+
 /* Custom scrollbar for better UX */
 @layer utilities {
   .scrollbar-thin {
