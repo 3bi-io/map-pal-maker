@@ -135,6 +135,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_tracker_stats: {
+        Args: { p_owner_id: string }
+        Returns: {
+          created_at: string
+          id: string
+          is_active: boolean
+          last_update: string
+          location_count: number
+          name: string
+          owner_id: string
+          password_hash: string
+          tracking_id: string
+          updated_at: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

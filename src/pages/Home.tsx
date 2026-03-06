@@ -22,12 +22,7 @@ const Home = () => {
       {
         "@type": "WebSite",
         "name": "TrackView",
-        "url": "https://trackview.lovable.app",
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": "https://trackview.lovable.app/map/{search_term_string}",
-          "query-input": "required name=search_term_string"
-        }
+        "url": "https://trackview.lovable.app"
       },
       {
         "@type": "WebApplication",
@@ -40,16 +35,10 @@ const Home = () => {
           "price": "0",
           "priceCurrency": "USD"
         },
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "4.8",
-          "ratingCount": "127"
-        },
         "featureList": [
           "Generate unique tracking links",
           "Real-time location monitoring",
           "Interactive map visualization",
-          "Terminal integration",
           "Secure location sharing"
         ]
       },
@@ -85,8 +74,8 @@ const Home = () => {
     <>
       <SEO
         title="TrackView - Real-Time Location Tracking & GPS Monitoring"
-        description="Generate unique tracking links and monitor device locations in real-time. Free location tracking with live map visualization, secure sharing, and terminal integration. Perfect for device monitoring and location-based applications."
-        keywords="location tracking, GPS tracking, real-time tracking, location sharing, device tracking, map tracking, geo tracking, live location, tracking link, location monitor, GPS monitor, real-time GPS, device locator"
+        description="Generate unique tracking links and monitor device locations in real-time. Free location tracking with live map visualization, secure sharing, and terminal integration."
+        keywords="location tracking, GPS tracking, real-time tracking, location sharing, device tracking, map tracking, live location, tracking link"
         canonical="https://trackview.lovable.app/"
         structuredData={structuredData}
       />

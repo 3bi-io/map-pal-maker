@@ -68,7 +68,7 @@ export async function shareUrl(url: string, title: string, text?: string): Promi
     } catch (err) {
       // User cancelled or share failed
       if ((err as Error).name !== 'AbortError') {
-        console.error('Share failed:', err);
+        // Share failed silently
       }
       return false;
     }

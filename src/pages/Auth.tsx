@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
 import SEO from '@/components/SEO';
 import { z } from 'zod';
 
@@ -20,6 +21,7 @@ const Auth = () => {
   const [displayName, setDisplayName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   
   const { user, signIn, signUp } = useAuth();
@@ -43,11 +45,13 @@ const Auth = () => {
       }
     }
     
-    try {
-      passwordSchema.parse(password);
-    } catch (e) {
-      if (e instanceof z.ZodError) {
-        newErrors.password = e.errors[0].message;
+    if (!isForgotPassword) {
+      try {
+        passwordSchema.parse(password);
+      } catch (e) {
+        if (e instanceof z.ZodError) {
+          newErrors.password = e.errors[0].message;
+        }
       }
     }
     
@@ -55,9 +59,47 @@ const Auth = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      emailSchema.parse(email);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        setErrors({ email: err.errors[0].message });
+        return;
+      }
+    }
+
+    setIsLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) throw error;
+      toast({
+        title: 'Check your email',
+        description: 'We sent you a password reset link.',
+      });
+      setIsForgotPassword(false);
+    } catch (err) {
+      toast({
+        title: 'Error',
+        description: err instanceof Error ? err.message : 'Failed to send reset email',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (isForgotPassword) {
+      return handleForgotPassword(e);
+    }
+
     if (!validateForm()) return;
     
     setIsLoading(true);
@@ -66,47 +108,29 @@ const Auth = () => {
       if (isLogin) {
         const { error } = await signIn(email, password);
         if (error) {
-          if (error.message.includes('Invalid login credentials')) {
-            toast({
-              title: 'Login failed',
-              description: 'Invalid email or password. Please try again.',
-              variant: 'destructive',
-            });
-          } else {
-            toast({
-              title: 'Login failed',
-              description: error.message,
-              variant: 'destructive',
-            });
-          }
-        } else {
           toast({
-            title: 'Welcome back!',
-            description: 'You have successfully logged in.',
+            title: 'Login failed',
+            description: error.message.includes('Invalid login credentials')
+              ? 'Invalid email or password. Please try again.'
+              : error.message,
+            variant: 'destructive',
           });
+        } else {
+          toast({ title: 'Welcome back!', description: 'You have successfully logged in.' });
           navigate('/dashboard');
         }
       } else {
         const { error } = await signUp(email, password, displayName);
         if (error) {
-          if (error.message.includes('User already registered')) {
-            toast({
-              title: 'Account exists',
-              description: 'An account with this email already exists. Please log in instead.',
-              variant: 'destructive',
-            });
-          } else {
-            toast({
-              title: 'Sign up failed',
-              description: error.message,
-              variant: 'destructive',
-            });
-          }
-        } else {
           toast({
-            title: 'Account created!',
-            description: 'Please check your email to verify your account.',
+            title: error.message.includes('User already registered') ? 'Account exists' : 'Sign up failed',
+            description: error.message.includes('User already registered')
+              ? 'An account with this email already exists. Please log in instead.'
+              : error.message,
+            variant: 'destructive',
           });
+        } else {
+          toast({ title: 'Account created!', description: 'Please check your email to verify your account.' });
         }
       }
     } finally {
@@ -114,10 +138,20 @@ const Auth = () => {
     }
   };
 
+  const getTitle = () => {
+    if (isForgotPassword) return 'Reset Password';
+    return isLogin ? 'Welcome Back' : 'Create Account';
+  };
+
+  const getDescription = () => {
+    if (isForgotPassword) return "Enter your email and we'll send you a reset link";
+    return isLogin ? 'Sign in to manage your trackers' : 'Sign up to start tracking locations';
+  };
+
   return (
     <>
       <SEO
-        title={isLogin ? 'Sign In - TrackView' : 'Create Account - TrackView'}
+        title={`${getTitle()} - TrackView`}
         description="Sign in or create an account to manage your location trackers."
       />
       <div className="min-h-screen bg-gradient-background flex items-center justify-center p-4 safe-area-top safe-area-bottom">
@@ -129,17 +163,13 @@ const Auth = () => {
               </div>
             </div>
             <div>
-              <CardTitle className="text-2xl">{isLogin ? 'Welcome Back' : 'Create Account'}</CardTitle>
-              <CardDescription>
-                {isLogin
-                  ? 'Sign in to manage your trackers'
-                  : 'Sign up to start tracking locations'}
-              </CardDescription>
+              <CardTitle className="text-2xl">{getTitle()}</CardTitle>
+              <CardDescription>{getDescription()}</CardDescription>
             </div>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              {!isLogin && (
+              {!isLogin && !isForgotPassword && (
                 <div className="space-y-2">
                   <Label htmlFor="displayName">Display Name</Label>
                   <div className="relative">
@@ -177,52 +207,82 @@ const Auth = () => {
                 )}
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    id="password"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                      setErrors((prev) => ({ ...prev, password: undefined }));
-                    }}
-                    className={`pl-10 pr-10 ${errors.password ? 'border-destructive' : ''}`}
-                  />
+              {!isForgotPassword && (
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Input
+                      id="password"
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        setErrors((prev) => ({ ...prev, password: undefined }));
+                      }}
+                      className={`pl-10 pr-10 ${errors.password ? 'border-destructive' : ''}`}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                  {errors.password && (
+                    <p className="text-sm text-destructive">{errors.password}</p>
+                  )}
+                </div>
+              )}
+
+              {isLogin && !isForgotPassword && (
+                <div className="text-right">
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    onClick={() => { setIsForgotPassword(true); setErrors({}); }}
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
                   >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    Forgot password?
                   </button>
                 </div>
-                {errors.password && (
-                  <p className="text-sm text-destructive">{errors.password}</p>
-                )}
-              </div>
+              )}
 
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? 'Please wait...' : isLogin ? 'Sign In' : 'Create Account'}
+                {isLoading
+                  ? 'Please wait...'
+                  : isForgotPassword
+                  ? 'Send Reset Link'
+                  : isLogin
+                  ? 'Sign In'
+                  : 'Create Account'}
               </Button>
             </form>
 
-            <div className="mt-6 text-center">
-              <button
-                type="button"
-                onClick={() => {
-                  setIsLogin(!isLogin);
-                  setErrors({});
-                }}
-                className="text-sm text-muted-foreground hover:text-primary transition-colors"
-              >
-                {isLogin
-                  ? "Don't have an account? Sign up"
-                  : 'Already have an account? Sign in'}
-              </button>
+            <div className="mt-6 text-center space-y-2">
+              {isForgotPassword ? (
+                <button
+                  type="button"
+                  onClick={() => { setIsForgotPassword(false); setErrors({}); }}
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
+                  Back to sign in
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsLogin(!isLogin);
+                    setErrors({});
+                  }}
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {isLogin
+                    ? "Don't have an account? Sign up"
+                    : 'Already have an account? Sign in'}
+                </button>
+              )}
             </div>
           </CardContent>
         </Card>
