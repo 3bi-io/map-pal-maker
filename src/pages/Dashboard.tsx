@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useRef, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { MapPin, Plus, Copy, Trash2, ToggleLeft, ToggleRight, Clock, Map, QrCode, Pencil, Check, X, MoreVertical, RefreshCw } from 'lucide-react';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { PullToRefreshIndicator, PullToRefreshContainer } from '@/components/PullToRefresh';
@@ -8,8 +8,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
 import Layout from '@/components/Layout';
 import SEO from '@/components/SEO';
 import QRCodeDialog from '@/components/QRCodeDialog';
@@ -17,6 +15,7 @@ import ShareButton from '@/components/ShareButton';
 import TrackerCardSkeleton from '@/components/TrackerCardSkeleton';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { formatDate, getTrackingUrl } from '@/lib/tracker-utils';
+import { useTrackers } from '@/hooks/useTrackers';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,188 +33,27 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-
-interface Tracker {
-  id: string;
-  tracking_id: string;
-  name: string;
-  is_active: boolean;
-  created_at: string;
-  location_count?: number;
-  last_update?: string;
-}
+import type { Tracker } from '@/hooks/useTrackers';
 
 const Dashboard = () => {
-  const [trackers, setTrackers] = useState<Tracker[]>([]);
-  const [loading, setLoading] = useState(true);
   const [deleteTrackerId, setDeleteTrackerId] = useState<string | null>(null);
   const [qrTracker, setQrTracker] = useState<Tracker | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
-  const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
   const editInputRef = useRef<HTMLInputElement>(null);
   
-  const { user, loading: authLoading } = useAuth();
-  const navigate = useNavigate();
   const { toast } = useToast();
   const isMobile = useIsMobile();
-
-  useEffect(() => {
-    if (!authLoading && !user) {
-      navigate('/auth');
-    }
-  }, [user, authLoading, navigate]);
-
-  useEffect(() => {
-    if (user) {
-      fetchTrackers();
-    }
-  }, [user]);
-
-  // Auto-refresh every 30 seconds
-  useEffect(() => {
-    if (!user) return;
-    
-    const interval = setInterval(() => {
-      fetchTrackers();
-    }, 30000);
-
-    return () => clearInterval(interval);
-  }, [user]);
-
-  const fetchTrackers = async () => {
-    try {
-      const { data: trackersData, error } = await supabase
-        .from('trackers')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      // Fetch location counts for each tracker
-      const trackersWithStats = await Promise.all(
-        (trackersData || []).map(async (tracker) => {
-          const { count, data: locations } = await supabase
-            .from('location_updates')
-            .select('created_at', { count: 'exact', head: false })
-            .eq('tracking_id', tracker.tracking_id)
-            .order('created_at', { ascending: false })
-            .limit(1);
-
-          return {
-            ...tracker,
-            location_count: count || 0,
-            last_update: locations?.[0]?.created_at,
-          };
-        })
-      );
-
-      setTrackers(trackersWithStats);
-      setLastRefresh(new Date());
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to load trackers',
-        variant: 'destructive',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const generateTrackingId = () => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-    for (let i = 0; i < 8; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
-  };
-
-  const createTracker = async () => {
-    if (!user) return;
-
-    const trackingId = generateTrackingId();
-    
-    try {
-      const { error } = await supabase
-        .from('trackers')
-        .insert({
-          tracking_id: trackingId,
-          owner_id: user.id,
-          name: `Tracker ${trackingId.slice(0, 4)}`,
-        });
-
-      if (error) throw error;
-
-      toast({
-        title: 'Tracker created!',
-        description: 'Your new tracker is ready to use.',
-      });
-
-      fetchTrackers();
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to create tracker',
-        variant: 'destructive',
-      });
-    }
-  };
-
-  const toggleTracker = async (trackerId: string, currentStatus: boolean) => {
-    try {
-      const { error } = await supabase
-        .from('trackers')
-        .update({ is_active: !currentStatus })
-        .eq('id', trackerId);
-
-      if (error) throw error;
-
-      setTrackers(trackers.map(t => 
-        t.id === trackerId ? { ...t, is_active: !currentStatus } : t
-      ));
-
-      toast({
-        title: currentStatus ? 'Tracker paused' : 'Tracker activated',
-        description: currentStatus ? 'Location updates will be ignored.' : 'Now accepting location updates.',
-      });
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to update tracker',
-        variant: 'destructive',
-      });
-    }
-  };
-
-  const deleteTracker = async () => {
-    if (!deleteTrackerId) return;
-
-    try {
-      const { error } = await supabase
-        .from('trackers')
-        .delete()
-        .eq('id', deleteTrackerId);
-
-      if (error) throw error;
-
-      setTrackers(trackers.filter(t => t.id !== deleteTrackerId));
-      
-      toast({
-        title: 'Tracker deleted',
-        description: 'The tracker and all its data have been removed.',
-      });
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to delete tracker',
-        variant: 'destructive',
-      });
-    } finally {
-      setDeleteTrackerId(null);
-    }
-  };
+  const {
+    trackers,
+    loading,
+    lastRefresh,
+    refetch,
+    createTracker,
+    toggleTracker,
+    deleteTracker,
+    renameTracker,
+  } = useTrackers();
 
   const startEditing = (tracker: Tracker) => {
     setEditingId(tracker.id);
@@ -228,56 +66,26 @@ const Dashboard = () => {
     setEditName('');
   };
 
-  const saveTrackerName = async (trackerId: string) => {
-    const trimmedName = editName.trim();
-    if (!trimmedName) {
-      toast({
-        title: 'Error',
-        description: 'Tracker name cannot be empty',
-        variant: 'destructive',
-      });
-      return;
-    }
+  const saveTrackerName = (trackerId: string) => {
+    renameTracker(trackerId, editName);
+    setEditingId(null);
+    setEditName('');
+  };
 
-    try {
-      const { error } = await supabase
-        .from('trackers')
-        .update({ name: trimmedName })
-        .eq('id', trackerId);
-
-      if (error) throw error;
-
-      setTrackers(trackers.map(t => 
-        t.id === trackerId ? { ...t, name: trimmedName } : t
-      ));
-
-      toast({
-        title: 'Renamed',
-        description: 'Tracker name updated successfully.',
-      });
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to rename tracker',
-        variant: 'destructive',
-      });
-    } finally {
-      setEditingId(null);
-      setEditName('');
-    }
+  const handleDelete = () => {
+    if (!deleteTrackerId) return;
+    deleteTracker(deleteTrackerId);
+    setDeleteTrackerId(null);
   };
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
-    toast({
-      title: 'Copied!',
-      description: `${label} copied to clipboard.`,
-    });
+    toast({ title: 'Copied!', description: `${label} copied to clipboard.` });
   };
 
   const handleRefresh = useCallback(async () => {
-    await fetchTrackers();
-  }, []);
+    await refetch();
+  }, [refetch]);
 
   const {
     containerRef,
@@ -286,19 +94,6 @@ const Dashboard = () => {
     progress,
     shouldTrigger,
   } = usePullToRefresh({ onRefresh: handleRefresh });
-
-  if (authLoading) {
-    return (
-      <Layout>
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <div className="w-12 h-12 rounded-full bg-gradient-primary mx-auto mb-4 animate-pulse" />
-            <p className="text-muted-foreground">Loading...</p>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
 
   return (
     <>
@@ -331,7 +126,7 @@ const Dashboard = () => {
               <Button
                 variant="outline"
                 size="icon"
-                onClick={handleRefresh}
+                onClick={() => refetch()}
                 disabled={isRefreshing}
                 className="hidden sm:flex shadow-card"
                 title="Refresh trackers"
@@ -388,7 +183,7 @@ const Dashboard = () => {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-7 w-7 text-green-600"
+                              className="h-7 w-7 text-primary"
                               onClick={() => saveTrackerName(tracker.id)}
                             >
                               <Check className="w-4 h-4" />
@@ -494,7 +289,7 @@ const Dashboard = () => {
                       </Button>
                     </div>
 
-                    {/* Mobile actions - Dropdown */}
+                    {/* Mobile actions */}
                     <div className="flex sm:hidden gap-2">
                       <Link to={`/map/${tracker.tracking_id}`} className="flex-1">
                         <Button variant="outline" size="sm" className="gap-1 w-full">
@@ -566,7 +361,7 @@ const Dashboard = () => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={deleteTracker} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>

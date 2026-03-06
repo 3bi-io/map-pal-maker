@@ -1,14 +1,16 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { MapPin, CheckCircle, Loader2, XCircle, AlertTriangle } from "lucide-react";
 import Layout from "@/components/Layout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
 import SEO from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 
 type TrackingStatus = "idle" | "requesting" | "tracking" | "error" | "invalid";
+
+const THROTTLE_MS = 5000;
 
 const TrackView = () => {
   const { id } = useParams();
@@ -19,25 +21,8 @@ const TrackView = () => {
   const [updateCount, setUpdateCount] = useState(0);
   const [trackerInfo, setTrackerInfo] = useState<{ name: string; is_active: boolean } | null>(null);
   const [checkingTracker, setCheckingTracker] = useState(true);
-  
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Home",
-        "item": "https://trackview.lovable.app"
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Track Device",
-        "item": `https://trackview.lovable.app/track/${id}`
-      }
-    ]
-  };
+  const lastSaveRef = useRef<number>(0);
+  const { toast } = useToast();
 
   // Check if tracker exists and is active
   useEffect(() => {
@@ -70,17 +55,16 @@ const TrackView = () => {
     checkTracker();
   }, [id]);
 
-  const saveLocationToDatabase = async (latitude: number, longitude: number, accuracy: number | null) => {
+  const saveLocationToDatabase = useCallback(async (latitude: number, longitude: number, accuracy: number | null) => {
     if (!id) return;
+
+    const now = Date.now();
+    if (now - lastSaveRef.current < THROTTLE_MS) return;
+    lastSaveRef.current = now;
     
     const { error } = await supabase
       .from('location_updates')
-      .insert({
-        tracking_id: id,
-        latitude,
-        longitude,
-        accuracy
-      });
+      .insert({ tracking_id: id, latitude, longitude, accuracy });
 
     if (error) {
       if (error.message?.includes('violates row-level security')) {
@@ -91,7 +75,7 @@ const TrackView = () => {
     } else {
       setUpdateCount(prev => prev + 1);
     }
-  };
+  }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const stopTracking = useCallback(() => {
     if (watchId !== null) {
@@ -100,8 +84,8 @@ const TrackView = () => {
     }
     setStatus("idle");
     setLocation(null);
-    toast.info("Location tracking stopped");
-  }, [watchId]);
+    toast({ title: "Tracking stopped", description: "Location tracking has been stopped." });
+  }, [watchId, toast]);
 
   useEffect(() => {
     return () => {
@@ -115,24 +99,23 @@ const TrackView = () => {
     if (!navigator.geolocation) {
       setStatus("error");
       setErrorMessage("Geolocation is not supported by your browser");
-      toast.error("Geolocation not supported");
+      toast({ title: "Not supported", description: "Geolocation not supported", variant: "destructive" });
       return;
     }
 
     setStatus("requesting");
+    if (navigator.vibrate) navigator.vibrate(30);
 
     const geoWatchId = navigator.geolocation.watchPosition(
       (position) => {
         const { latitude, longitude, accuracy } = position.coords;
         setLocation({ lat: latitude, lng: longitude });
         setStatus("tracking");
-        
         saveLocationToDatabase(latitude, longitude, accuracy);
       },
       (error) => {
         setStatus("error");
         let message = "Unable to retrieve location";
-        
         switch (error.code) {
           case error.PERMISSION_DENIED:
             message = "Location permission denied. Please allow location access and try again.";
@@ -144,19 +127,14 @@ const TrackView = () => {
             message = "Location request timed out";
             break;
         }
-        
         setErrorMessage(message);
-        toast.error(message);
+        toast({ title: "Location error", description: message, variant: "destructive" });
       },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 5000
-      }
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 5000 }
     );
 
     setWatchId(geoWatchId);
-    toast.success("Location tracking started!");
+    toast({ title: "Tracking started!", description: "Your location is being shared." });
   };
 
   if (checkingTracker) {
@@ -175,10 +153,7 @@ const TrackView = () => {
   if (status === "invalid") {
     return (
       <>
-        <SEO
-          title="Invalid Tracker | TrackView"
-          description="This tracking link is invalid or has expired."
-        />
+        <SEO title="Invalid Tracker | TrackView" description="This tracking link is invalid or has expired." />
         <Layout>
           <main className="container mx-auto px-4 py-8 sm:py-12">
             <div className="max-w-md mx-auto text-center space-y-6">
@@ -201,10 +176,8 @@ const TrackView = () => {
     <>
       <SEO
         title={`Enable Location Tracking - ${trackerInfo?.name || 'Tracker'} | TrackView`}
-        description={`Start sharing your real-time location for tracking ID ${id}. Secure location tracking with live updates.`}
-        keywords="enable location tracking, start GPS tracking, share location, device tracking, real-time location sharing"
+        description={`Start sharing your real-time location for tracking ID ${id}.`}
         canonical={`https://trackview.lovable.app/track/${id}`}
-        structuredData={structuredData}
       />
       <Layout>
         <main className="container mx-auto px-4 py-8 sm:py-12">
@@ -219,6 +192,8 @@ const TrackView = () => {
                   <Loader2 className="w-8 h-8 sm:w-10 sm:h-10 text-primary-foreground animate-spin" />
                 ) : status === "error" ? (
                   <XCircle className="w-8 h-8 sm:w-10 sm:h-10 text-destructive-foreground" />
+                ) : status === "tracking" ? (
+                  <MapPin className="w-8 h-8 sm:w-10 sm:h-10 text-primary-foreground animate-pulse" />
                 ) : (
                   <MapPin className="w-8 h-8 sm:w-10 sm:h-10 text-primary-foreground" />
                 )}
@@ -236,86 +211,94 @@ const TrackView = () => {
               </p>
             </div>
 
+            {/* Active tracking banner */}
+            {status === "tracking" && (
+              <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 text-center">
+                <p className="text-sm font-medium text-green-700 dark:text-green-400 flex items-center justify-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                  Actively sharing your location · {updateCount} updates sent
+                </p>
+              </div>
+            )}
+
             <Card className="p-6 sm:p-8 shadow-elevated space-y-6">
-            {status === "tracking" && location && (
-              <div className="p-4 bg-green-500/10 rounded-lg border border-green-500/20">
-                <p className="text-sm font-medium text-green-700 dark:text-green-400 mb-2">
-                  Currently sharing location ({updateCount} updates sent):
-                </p>
-                <p className="font-mono text-sm">
-                  Lat: {location.lat.toFixed(6)}, Lng: {location.lng.toFixed(6)}
-                </p>
-              </div>
-            )}
-
-            {status === "error" && (
-              <div className="p-4 bg-destructive/10 rounded-lg border border-destructive/20">
-                <p className="text-sm text-destructive">{errorMessage}</p>
-              </div>
-            )}
-
-            <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <CheckCircle className="w-5 h-5 text-primary mt-0.5" />
-                <div>
-                  <h3 className="font-semibold mb-1">Real-time Updates</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Your location will be saved and shared in real-time.
+              {status === "tracking" && location && (
+                <div className="p-4 bg-muted rounded-lg">
+                  <p className="text-sm text-muted-foreground mb-1">Current Position</p>
+                  <p className="font-mono text-sm">
+                    {location.lat.toFixed(6)}, {location.lng.toFixed(6)}
                   </p>
                 </div>
-              </div>
-              
-              <div className="flex items-start gap-3">
-                <CheckCircle className="w-5 h-5 text-primary mt-0.5" />
-                <div>
-                  <h3 className="font-semibold mb-1">Secure Storage</h3>
-                  <p className="text-sm text-muted-foreground">
-                    All location data is stored securely in the cloud.
-                  </p>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-3">
-                <CheckCircle className="w-5 h-5 text-primary mt-0.5" />
-                <div>
-                  <h3 className="font-semibold mb-1">Stop Anytime</h3>
-                  <p className="text-sm text-muted-foreground">
-                    You can stop sharing your location at any time.
-                  </p>
-                </div>
-              </div>
-            </div>
+              )}
 
-            {status === "tracking" ? (
-              <Button 
-                size="lg" 
-                variant="destructive"
-                className="w-full gap-2"
-                onClick={stopTracking}
-              >
-                <XCircle className="w-5 h-5" />
-                Stop Tracking
-              </Button>
-            ) : (
-              <Button 
-                size="lg" 
-                className="w-full gap-2"
-                onClick={handleStartTracking}
-                disabled={status === "requesting"}
-              >
-                {status === "requesting" ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    Requesting Permission...
-                  </>
-                ) : (
-                  <>
-                    <MapPin className="w-5 h-5" />
-                    {status === "error" ? "Try Again" : "Start Tracking"}
-                  </>
-                )}
-              </Button>
-            )}
+              {status === "error" && (
+                <div className="p-4 bg-destructive/10 rounded-lg border border-destructive/20">
+                  <p className="text-sm text-destructive">{errorMessage}</p>
+                </div>
+              )}
+
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-semibold mb-1">Real-time Updates</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Your location will be saved and shared in real-time.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-semibold mb-1">Secure Storage</h3>
+                    <p className="text-sm text-muted-foreground">
+                      All location data is stored securely in the cloud.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-semibold mb-1">Stop Anytime</h3>
+                    <p className="text-sm text-muted-foreground">
+                      You can stop sharing your location at any time.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {status === "tracking" ? (
+                <Button 
+                  size="lg" 
+                  variant="destructive"
+                  className="w-full gap-2"
+                  onClick={stopTracking}
+                >
+                  <XCircle className="w-5 h-5" />
+                  Stop Tracking
+                </Button>
+              ) : (
+                <Button 
+                  size="lg" 
+                  className="w-full gap-2"
+                  onClick={handleStartTracking}
+                  disabled={status === "requesting"}
+                >
+                  {status === "requesting" ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Requesting Permission...
+                    </>
+                  ) : (
+                    <>
+                      <MapPin className="w-5 h-5" />
+                      {status === "error" ? "Try Again" : "Start Tracking"}
+                    </>
+                  )}
+                </Button>
+              )}
             </Card>
           </div>
         </main>
