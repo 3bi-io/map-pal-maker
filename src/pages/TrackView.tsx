@@ -40,11 +40,11 @@ const TrackView = () => {
       if (error || !tracker) {
         setStatus("invalid");
         setErrorMessage("This tracking link is invalid.");
-      } else if (!data.is_active) {
+      } else if (!tracker.is_active) {
         setStatus("invalid");
         setErrorMessage("This tracker has been paused by its owner.");
       } else {
-        setTrackerInfo({ name: data.name, is_active: data.is_active });
+        setTrackerInfo({ name: tracker.name, is_active: tracker.is_active });
       }
       
       setCheckingTracker(false);
