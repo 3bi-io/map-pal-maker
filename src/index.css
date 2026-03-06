@@ -119,12 +119,21 @@ All colors MUST be HSL.
 }
 
 @layer base {
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
   * {
     @apply border-border;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+    /* Prevent iOS text size adjustment */
+    -webkit-text-size-adjust: 100%;
   }
 
   /* Touch targets - minimum 44px for accessibility */
@@ -141,6 +150,27 @@ All colors MUST be HSL.
   [class*="h-9"] {
     min-height: auto;
   }
+
+  /* Focus-visible styles for accessibility */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Ensure minimum font size on mobile to prevent iOS zoom */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+
+  @media (min-width: 768px) {
+    input, select, textarea {
+      font-size: inherit !important;
+    }
+  }
+}
+
+/* Skip to content link */
+.skip-to-content {
+  @apply sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:shadow-elevated;
 }
 
 /* Safe area insets for notched devices (PWA support) */
@@ -150,6 +180,18 @@ All colors MUST be HSL.
 
 .safe-area-bottom {
   padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Page transition animations */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 200ms ease-out, transform 200ms ease-out;
 }
 
 /* Custom scrollbar for better UX */

@@ -1,9 +1,8 @@
-import { MapPin, LogOut, LayoutDashboard, User, Sun, Moon, Smartphone } from "lucide-react";
+import { MapPin, LogOut, LayoutDashboard, User, Sun, Moon, Smartphone, Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/hooks/useTheme";
-import { useIsMobile } from "@/hooks/use-mobile";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,7 +27,7 @@ const ThemeToggle = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-10 w-10">
+        <Button variant="ghost" size="icon" className="h-10 w-10" aria-label="Toggle theme">
           {theme === 'light' ? (
             <Sun className="w-5 h-5" />
           ) : theme === 'oled' ? (
@@ -60,7 +59,6 @@ const ThemeToggle = () => {
 
 const Navigation = () => {
   const { user, signOut } = useAuth();
-  const isMobile = useIsMobile();
   const [sheetOpen, setSheetOpen] = useState(false);
 
   const getInitials = () => {
@@ -69,10 +67,10 @@ const Navigation = () => {
   };
 
   return (
-    <nav className="border-b bg-card/80 backdrop-blur-md sticky top-0 z-50 safe-area-top">
+    <nav className="border-b bg-card/80 backdrop-blur-md sticky top-0 z-50 safe-area-top" role="navigation" aria-label="Main navigation">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 group">
+        <Link to="/" className="flex items-center gap-2 group" aria-label="TrackView Home">
           <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-primary flex items-center justify-center shadow-card group-hover:scale-105 transition-transform">
             <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-primary-foreground" />
           </div>
@@ -101,7 +99,7 @@ const Navigation = () => {
               
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="rounded-full h-10 w-10">
+                  <Button variant="ghost" size="icon" className="rounded-full h-10 w-10" aria-label="Account menu">
                     <Avatar className="w-8 h-8">
                       <AvatarFallback className="bg-primary text-primary-foreground text-sm">
                         {getInitials()}
@@ -129,27 +127,23 @@ const Navigation = () => {
           )}
         </div>
 
-        {/* Mobile/Tablet Navigation */}
+        {/* Mobile Navigation - Hamburger */}
         <div className="flex md:hidden items-center gap-1">
           <ThemeToggle />
           
-          {user && (
-            <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-10 w-10">
-                  <Avatar className="w-8 h-8">
-                    <AvatarFallback className="bg-primary text-primary-foreground text-sm">
-                      {getInitials()}
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-72">
-                <SheetHeader>
-                  <SheetTitle className="text-left">Account</SheetTitle>
-                </SheetHeader>
-                <div className="mt-6 space-y-4">
-                  <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+          <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-10 w-10" aria-label="Open menu">
+                <Menu className="w-5 h-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-72">
+              <SheetHeader>
+                <SheetTitle className="text-left">Menu</SheetTitle>
+              </SheetHeader>
+              <div className="mt-6 space-y-4">
+                {user && (
+                  <div className="flex items-center gap-3 p-3 bg-muted rounded-xl">
                     <Avatar className="w-10 h-10">
                       <AvatarFallback className="bg-primary text-primary-foreground">
                         {getInitials()}
@@ -160,20 +154,30 @@ const Navigation = () => {
                       <p className="text-xs text-muted-foreground">Signed in</p>
                     </div>
                   </div>
-                  
-                  <div className="space-y-1">
+                )}
+                
+                <div className="space-y-1">
+                  <Link to="/" onClick={() => setSheetOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start gap-2 h-12">
+                      <MapPin className="w-4 h-4" />
+                      Home
+                    </Button>
+                  </Link>
+                  {user && (
                     <Link to="/dashboard" onClick={() => setSheetOpen(false)}>
-                      <Button variant="ghost" className="w-full justify-start gap-2 h-11">
+                      <Button variant="ghost" className="w-full justify-start gap-2 h-12">
                         <LayoutDashboard className="w-4 h-4" />
                         Dashboard
                       </Button>
                     </Link>
-                  </div>
-                  
+                  )}
+                </div>
+                
+                {user ? (
                   <div className="pt-4 border-t">
                     <Button 
                       variant="ghost" 
-                      className="w-full justify-start gap-2 h-11 text-destructive hover:text-destructive hover:bg-destructive/10"
+                      className="w-full justify-start gap-2 h-12 text-destructive hover:text-destructive hover:bg-destructive/10"
                       onClick={() => {
                         signOut();
                         setSheetOpen(false);
@@ -183,16 +187,16 @@ const Navigation = () => {
                       Sign Out
                     </Button>
                   </div>
-                </div>
-              </SheetContent>
-            </Sheet>
-          )}
-          
-          {!user && !isMobile && (
-            <Link to="/auth">
-              <Button size="sm" className="h-9">Sign In</Button>
-            </Link>
-          )}
+                ) : (
+                  <div className="pt-4 border-t">
+                    <Link to="/auth" onClick={() => setSheetOpen(false)}>
+                      <Button className="w-full h-12">Sign In</Button>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </nav>

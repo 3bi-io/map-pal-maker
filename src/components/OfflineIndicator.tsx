@@ -9,7 +9,6 @@ const OfflineIndicator = () => {
   useEffect(() => {
     const handleOnline = () => {
       setIsOnline(true);
-      // Show "back online" briefly then hide
       setTimeout(() => setShowBanner(false), 2000);
     };
     
@@ -21,7 +20,6 @@ const OfflineIndicator = () => {
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    // Initial check
     if (!navigator.onLine) {
       setShowBanner(true);
     }
@@ -35,24 +33,29 @@ const OfflineIndicator = () => {
   if (!showBanner) return null;
 
   return (
-    <div className={`fixed top-0 left-0 right-0 z-[100] px-4 py-2 text-center text-sm font-medium transition-colors ${
-      isOnline 
-        ? 'bg-green-500 text-green-50' 
-        : 'bg-destructive text-destructive-foreground'
-    }`}>
+    <div 
+      className={`fixed top-0 left-0 right-0 z-[100] px-4 py-2 text-center text-sm font-medium transition-colors safe-area-top ${
+        isOnline 
+          ? 'bg-green-500 text-green-50' 
+          : 'bg-destructive text-destructive-foreground'
+      }`}
+      role="alert"
+      aria-live="assertive"
+    >
       {isOnline ? (
         <span>Back online</span>
       ) : (
         <div className="flex items-center justify-center gap-2">
-          <WifiOff className="w-4 h-4" />
-          <span>You're offline. Some features may be limited.</span>
+          <WifiOff className="w-4 h-4" aria-hidden="true" />
+          <span>You're offline</span>
           <Button 
             size="sm" 
             variant="secondary" 
             className="h-6 px-2 text-xs"
             onClick={() => window.location.reload()}
+            aria-label="Retry connection"
           >
-            <RefreshCw className="w-3 h-3 mr-1" />
+            <RefreshCw className="w-3 h-3 mr-1" aria-hidden="true" />
             Retry
           </Button>
         </div>

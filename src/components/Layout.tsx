@@ -19,10 +19,18 @@ const Layout = ({
   const isMobile = useIsMobile();
 
   return (
-    <div className="min-h-screen bg-gradient-background flex flex-col">
+    <div className="min-h-screen bg-gradient-background flex flex-col overflow-x-hidden">
+      {/* Skip to content link for accessibility */}
+      <a href="#main-content" className="skip-to-content">
+        Skip to content
+      </a>
+
       {showNav && <Navigation />}
       
-      <div className={`flex-1 ${showMobileNav && isMobile ? 'pb-20' : ''}`}>
+      <div 
+        id="main-content" 
+        className={`flex-1 ${showMobileNav && isMobile ? 'pb-20' : ''}`}
+      >
         {children}
       </div>
       
