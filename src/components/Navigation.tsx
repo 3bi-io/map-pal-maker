@@ -1,4 +1,4 @@
-import { MapPin, LogOut, LayoutDashboard, User, Sun, Moon, Smartphone, Menu } from "lucide-react";
+import { MapPin, LogOut, LayoutDashboard, User, Sun, Moon, Smartphone } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -22,18 +22,10 @@ import {
 } from "@/components/ui/sheet";
 import { useState } from "react";
 
-const Navigation = () => {
+const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
-  const { user, signOut } = useAuth();
-  const isMobile = useIsMobile();
-  const [sheetOpen, setSheetOpen] = useState(false);
 
-  const getInitials = () => {
-    if (!user?.email) return 'U';
-    return user.email.charAt(0).toUpperCase();
-  };
-
-  const ThemeToggle = () => (
+  return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="h-10 w-10">
@@ -64,6 +56,17 @@ const Navigation = () => {
       </DropdownMenuContent>
     </DropdownMenu>
   );
+};
+
+const Navigation = () => {
+  const { user, signOut } = useAuth();
+  const isMobile = useIsMobile();
+  const [sheetOpen, setSheetOpen] = useState(false);
+
+  const getInitials = () => {
+    if (!user?.email) return 'U';
+    return user.email.charAt(0).toUpperCase();
+  };
 
   return (
     <nav className="border-b bg-card/80 backdrop-blur-md sticky top-0 z-50 safe-area-top">
@@ -120,14 +123,9 @@ const Navigation = () => {
               </DropdownMenu>
             </>
           ) : (
-            <>
-              <Link to="/create">
-                <Button variant="ghost" className="h-10">Create Tracker</Button>
-              </Link>
-              <Link to="/auth">
-                <Button className="h-10">Sign In</Button>
-              </Link>
-            </>
+            <Link to="/auth">
+              <Button className="h-10">Sign In</Button>
+            </Link>
           )}
         </div>
 

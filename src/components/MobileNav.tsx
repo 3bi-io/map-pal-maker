@@ -1,4 +1,4 @@
-import { Home, LayoutDashboard, Plus, Settings, MapPin } from "lucide-react";
+import { Home, LayoutDashboard, MapPin, LogIn } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -9,7 +9,6 @@ const MobileNav = () => {
   const location = useLocation();
   const isMobile = useIsMobile();
 
-  // Only show on mobile
   if (!isMobile) return null;
 
   const isActive = (path: string) => location.pathname === path;
@@ -17,11 +16,9 @@ const MobileNav = () => {
   const navItems = user ? [
     { path: "/", icon: Home, label: "Home" },
     { path: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-    { path: "/create", icon: Plus, label: "Create" },
   ] : [
     { path: "/", icon: Home, label: "Home" },
-    { path: "/create", icon: MapPin, label: "Track" },
-    { path: "/auth", icon: Settings, label: "Sign In" },
+    { path: "/auth", icon: LogIn, label: "Sign In" },
   ];
 
   return (

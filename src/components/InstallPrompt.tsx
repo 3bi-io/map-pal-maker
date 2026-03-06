@@ -1,19 +1,19 @@
 import { Download, X, Smartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePWAInstall } from '@/hooks/usePWAInstall';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { useState, useEffect } from 'react';
 
 const InstallPrompt = () => {
   const { isInstallable, isInstalled, installApp } = usePWAInstall();
   const [dismissed, setDismissed] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
-    // Check if iOS
     const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     setIsIOS(iOS);
     
-    // Check if dismissed in this session
     const wasDismissed = sessionStorage.getItem('pwa-prompt-dismissed');
     if (wasDismissed) setDismissed(true);
   }, []);
@@ -27,15 +27,17 @@ const InstallPrompt = () => {
     const success = await installApp();
     if (success) {
       setDismissed(true);
+      if (navigator.vibrate) navigator.vibrate(50);
     }
   };
 
-  // Don't show if already installed, dismissed, or not installable (unless iOS)
   if (isInstalled || dismissed) return null;
   if (!isInstallable && !isIOS) return null;
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-96 z-50 animate-in slide-in-from-bottom-4">
+    <div className={`fixed left-4 right-4 md:left-auto md:right-4 md:w-96 z-40 animate-in slide-in-from-bottom-4 ${
+      isMobile ? 'bottom-20' : 'bottom-4'
+    }`}>
       <div className="bg-card border border-border rounded-xl shadow-elevated p-4">
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center flex-shrink-0">
