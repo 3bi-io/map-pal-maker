@@ -34,12 +34,10 @@ const TrackView = () => {
       }
 
       const { data, error } = await supabase
-        .from('trackers')
-        .select('name, is_active')
-        .eq('tracking_id', id)
-        .maybeSingle();
+        .rpc('check_tracker_status', { p_tracking_id: id });
 
-      if (error || !data) {
+      const tracker = data?.[0];
+      if (error || !tracker) {
         setStatus("invalid");
         setErrorMessage("This tracking link is invalid.");
       } else if (!data.is_active) {
