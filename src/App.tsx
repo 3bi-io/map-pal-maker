@@ -41,7 +41,11 @@ const App = () => (
                     </ProtectedRoute>
                   } />
                   <Route path="/create" element={<Navigate to="/dashboard" replace />} />
-                  <Route path="/map/:id" element={<MapView />} />
+                  <Route path="/map/:id" element={
+                    <ProtectedRoute>
+                      <MapView />
+                    </ProtectedRoute>
+                  } />
                   <Route path="/track/:id" element={<TrackView />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
