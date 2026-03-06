@@ -135,6 +135,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_tracker_status: {
+        Args: { p_tracking_id: string }
+        Returns: {
+          is_active: boolean
+          name: string
+        }[]
+      }
       get_tracker_stats: {
         Args: { p_owner_id: string }
         Returns: {
