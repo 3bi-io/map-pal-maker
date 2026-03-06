@@ -154,13 +154,15 @@ const Auth = () => {
         title={`${getTitle()} - TrackView`}
         description="Sign in or create an account to manage your location trackers."
       />
-      <div className="min-h-screen bg-gradient-background flex items-center justify-center p-4 safe-area-top safe-area-bottom">
-        <Card className="w-full max-w-md shadow-elevated">
+      <div className="min-h-[100dvh] bg-gradient-background flex items-center justify-center p-4 safe-area-top safe-area-bottom">
+        <Card className="w-full max-w-md shadow-elevated rounded-xl">
           <CardHeader className="text-center space-y-4">
             <div className="flex justify-center">
-              <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center shadow-card">
-                <MapPin className="w-8 h-8 text-primary-foreground" />
-              </div>
+              <Link to="/" aria-label="TrackView Home">
+                <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center shadow-card">
+                  <MapPin className="w-8 h-8 text-primary-foreground" />
+                </div>
+              </Link>
             </div>
             <div>
               <CardTitle className="text-2xl">{getTitle()}</CardTitle>
@@ -173,14 +175,15 @@ const Auth = () => {
                 <div className="space-y-2">
                   <Label htmlFor="displayName">Display Name</Label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
                     <Input
                       id="displayName"
                       type="text"
                       placeholder="Your name"
                       value={displayName}
                       onChange={(e) => setDisplayName(e.target.value)}
-                      className="pl-10"
+                      className="pl-10 h-12"
+                      autoComplete="name"
                     />
                   </div>
                 </div>
@@ -189,7 +192,7 @@ const Auth = () => {
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
                   <Input
                     id="email"
                     type="email"
@@ -199,11 +202,14 @@ const Auth = () => {
                       setEmail(e.target.value);
                       setErrors((prev) => ({ ...prev, email: undefined }));
                     }}
-                    className={`pl-10 ${errors.email ? 'border-destructive' : ''}`}
+                    className={`pl-10 h-12 ${errors.email ? 'border-destructive' : ''}`}
+                    autoComplete="email"
+                    aria-invalid={!!errors.email}
+                    aria-describedby={errors.email ? 'email-error' : undefined}
                   />
                 </div>
                 {errors.email && (
-                  <p className="text-sm text-destructive">{errors.email}</p>
+                  <p id="email-error" className="text-sm text-destructive" role="alert">{errors.email}</p>
                 )}
               </div>
 
@@ -211,7 +217,7 @@ const Auth = () => {
                 <div className="space-y-2">
                   <Label htmlFor="password">Password</Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
                     <Input
                       id="password"
                       type={showPassword ? 'text' : 'password'}
@@ -221,18 +227,22 @@ const Auth = () => {
                         setPassword(e.target.value);
                         setErrors((prev) => ({ ...prev, password: undefined }));
                       }}
-                      className={`pl-10 pr-10 ${errors.password ? 'border-destructive' : ''}`}
+                      className={`pl-10 pr-10 h-12 ${errors.password ? 'border-destructive' : ''}`}
+                      autoComplete={isLogin ? 'current-password' : 'new-password'}
+                      aria-invalid={!!errors.password}
+                      aria-describedby={errors.password ? 'password-error' : undefined}
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1"
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
                   {errors.password && (
-                    <p className="text-sm text-destructive">{errors.password}</p>
+                    <p id="password-error" className="text-sm text-destructive" role="alert">{errors.password}</p>
                   )}
                 </div>
               )}
@@ -249,7 +259,7 @@ const Auth = () => {
                 </div>
               )}
 
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button type="submit" className="w-full h-12" disabled={isLoading}>
                 {isLoading
                   ? 'Please wait...'
                   : isForgotPassword
