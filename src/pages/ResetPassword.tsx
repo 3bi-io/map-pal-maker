@@ -129,9 +129,7 @@ const ResetPassword = () => {
         <Card className="w-full max-w-md shadow-elevated">
           <CardHeader className="text-center space-y-4">
             <div className="flex justify-center">
-              <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center shadow-card">
-                <MapPin className="w-8 h-8 text-primary-foreground" />
-              </div>
+              <Logo className="h-20" />
             </div>
             <div>
               <CardTitle className="text-2xl">Set New Password</CardTitle>
