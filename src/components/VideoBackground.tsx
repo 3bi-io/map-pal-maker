@@ -76,16 +76,9 @@ const VideoBackground = ({ src, poster, className, overlayClassName }: VideoBack
 
   if (prefersReducedMotion) {
     return (
-      <>
-        {poster && (
-          <div
-            className={cn('absolute inset-0 bg-cover bg-center bg-no-repeat', className)}
-            style={{ backgroundImage: `url('${poster}')` }}
-            aria-hidden="true"
-          />
-        )}
+      <div className="absolute inset-0" aria-hidden="true">
         <div className={cn('absolute inset-0 bg-background/50 dark:bg-background/60 [.oled_&]:bg-background/70', overlayClassName)} />
-      </>
+      </div>
     );
   }
 
