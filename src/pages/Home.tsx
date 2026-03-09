@@ -184,7 +184,8 @@ const Home = () => {
           <header className="relative py-16 sm:py-24 md:py-36 text-center space-y-5 sm:space-y-8 px-4 overflow-hidden">
             {/* Hero background image */}
             <div
-              className="absolute inset-0 -z-10 bg-cover bg-center bg-no-repeat"
+              ref={heroBgRef}
+              className="absolute inset-0 -z-10 bg-cover bg-center bg-no-repeat scale-110 will-change-transform"
               style={{ backgroundImage: "url('/images/hero-bg.jpg')" }}
               aria-hidden="true"
             >
