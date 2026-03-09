@@ -33,9 +33,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useSubscription } from '@/hooks/useSubscription';
 import type { Tracker } from '@/hooks/useTrackers';
 
 const Dashboard = () => {
+  const { isProUser, subscription } = useSubscription();
   const [deleteTrackerId, setDeleteTrackerId] = useState<string | null>(null);
   const [qrTracker, setQrTracker] = useState<Tracker | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
