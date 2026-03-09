@@ -1,10 +1,11 @@
 
 
-## Remove PWA Install Prompt
+## Replace Logo Icon with New Image
 
-Remove the `<InstallPrompt />` component from `src/App.tsx` and its import. The component file and hook can remain for future use but won't render.
+The user uploaded a new map pin icon (blue/cyan gradient with orbital ring and sparkle) to replace the current `logo-icon.png`.
 
-| File | Change |
-|------|--------|
-| `src/App.tsx` | Remove `InstallPrompt` import and `<InstallPrompt />` usage |
+### Plan
+
+1. **Copy the uploaded image** to `src/assets/logo-icon.png`, replacing the existing icon
+2. **No code changes needed** — `Logo.tsx` already imports from `@/assets/logo-icon.png` and renders it with CSS text, so the new image will automatically appear in all contexts (navbar, auth, reset password) across all themes
 

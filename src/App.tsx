@@ -7,7 +7,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/hooks/useTheme";
 import ErrorBoundary from "@/components/ErrorBoundary";
-import InstallPrompt from "@/components/InstallPrompt";
+
 import OfflineIndicator from "@/components/OfflineIndicator";
 import CookieConsent from "@/components/CookieConsent";
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -78,7 +78,7 @@ const App = () => (
                   </Routes>
                 </PageTransition>
               </BrowserRouter>
-              <InstallPrompt />
+              
               <CookieConsent />
             </TooltipProvider>
           </ErrorBoundary>
