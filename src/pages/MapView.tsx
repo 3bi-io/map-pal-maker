@@ -521,7 +521,6 @@ const MapView = () => {
         description={`View real-time GPS location tracking on an interactive map for tracker ${id}. Live updates, movement history, and speed data.`}
         canonical={`https://mapme.live/map/${id}`}
         noindex
-        canonical={`https://mapme.live/map/${id}`}
       />
       <Layout showMobileNav={false}>
         <main className={`flex-1 ${isMobile ? '' : 'container mx-auto px-2 sm:px-4 py-2 sm:py-4'}`}>
