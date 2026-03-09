@@ -1,22 +1,35 @@
-import logoLight from '@/assets/logo-light.png';
-import logoDark from '@/assets/logo-dark.png';
-import { useTheme } from '@/hooks/useTheme';
+import logoIcon from '@/assets/logo-icon.png';
+import { cn } from '@/lib/utils';
 
 interface LogoProps {
   className?: string;
+  iconOnly?: boolean;
+  size?: 'sm' | 'md' | 'lg';
 }
 
-const Logo = ({ className = 'h-10' }: LogoProps) => {
-  const { theme } = useTheme();
-  const src = theme === 'light' ? logoLight : logoDark;
+const sizeConfig = {
+  sm: { icon: 'h-7', text: 'text-base' },
+  md: { icon: 'h-8 sm:h-9', text: 'text-lg sm:text-xl' },
+  lg: { icon: 'h-14', text: 'text-3xl' },
+};
+
+const Logo = ({ className, iconOnly = false, size = 'md' }: LogoProps) => {
+  const { icon, text } = sizeConfig[size];
 
   return (
-    <img
-      src={src}
-      alt="MᴀᴘMᴇ.Lɪᴠᴇ"
-      className={className}
-      draggable={false}
-    />
+    <div className={cn('flex items-center gap-2', className)}>
+      <img
+        src={logoIcon}
+        alt={iconOnly ? 'MᴀᴘMᴇ.Lɪᴠᴇ' : ''}
+        className={cn('object-contain w-auto', icon)}
+        draggable={false}
+      />
+      {!iconOnly && (
+        <span className={cn('font-bold text-foreground tracking-tight select-none', text)}>
+          MᴀᴘMᴇ.Lɪᴠᴇ
+        </span>
+      )}
+    </div>
   );
 };
 
