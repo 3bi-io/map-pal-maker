@@ -51,6 +51,8 @@ const App = () => (
                       </ProtectedRoute>
                     } />
                     <Route path="/track/:id" element={<TrackView />} />
+                    <Route path="/privacy" element={<PrivacyPolicy />} />
+                    <Route path="/terms" element={<TermsOfService />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </PageTransition>
