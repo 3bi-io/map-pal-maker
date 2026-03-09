@@ -171,6 +171,18 @@ const Navigation = () => {
                       Home
                     </Button>
                   </Link>
+                  <Link to="/pricing" onClick={() => setSheetOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start gap-2 h-12">
+                      <Tag className="w-4 h-4" />
+                      Pricing
+                    </Button>
+                  </Link>
+                  <Link to="/docs" onClick={() => setSheetOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start gap-2 h-12">
+                      <BookOpen className="w-4 h-4" />
+                      Docs
+                    </Button>
+                  </Link>
                   {user && (
                     <Link to="/dashboard" onClick={() => setSheetOpen(false)}>
                       <Button variant="ghost" className="w-full justify-start gap-2 h-12">
