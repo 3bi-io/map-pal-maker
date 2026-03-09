@@ -1,5 +1,6 @@
 import { Check, Link2, Map, Shield } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import VideoBackground from "@/components/VideoBackground";
 
 const features = [
   {
