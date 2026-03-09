@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { MapPin, Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
+import Logo from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
