@@ -83,9 +83,16 @@ const HeroSection = () => {
 
   return (
     <header className="relative py-16 sm:py-20 lg:py-28 overflow-hidden">
-      {/* Animated gradient background */}
+      {/* Background image */}
       <div
-        className="absolute inset-0 -z-10 opacity-30"
+        className="absolute inset-0 -z-20 bg-cover bg-center bg-no-repeat bg-background"
+        style={{ backgroundImage: "url('/images/hero-bg.jpg')" }}
+      />
+      {/* Theme-aware overlay for text readability */}
+      <div className="absolute inset-0 -z-10 bg-background/70 dark:bg-background/80 [.oled_&]:bg-background/85" />
+      {/* Gradient accent overlay */}
+      <div
+        className="absolute inset-0 -z-10 opacity-40"
         style={{
           background:
             "radial-gradient(ellipse 80% 60% at 50% 40%, hsl(var(--primary) / 0.15), transparent), radial-gradient(ellipse 60% 50% at 80% 60%, hsl(var(--accent) / 0.1), transparent)",
