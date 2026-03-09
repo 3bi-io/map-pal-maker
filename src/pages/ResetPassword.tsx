@@ -83,9 +83,7 @@ const ResetPassword = () => {
           <Card className="w-full max-w-md shadow-elevated text-center">
             <CardHeader>
               <div className="flex justify-center mb-4">
-                <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center shadow-card">
-                  <MapPin className="w-8 h-8 text-primary-foreground" />
-                </div>
+                <Logo className="h-20" />
               </div>
               <CardTitle>Invalid Reset Link</CardTitle>
               <CardDescription>
