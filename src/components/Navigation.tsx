@@ -87,6 +87,12 @@ const Navigation = () => {
           <Link to="/">
             <Button variant="ghost" className="h-10">Home</Button>
           </Link>
+          <Link to="/pricing">
+            <Button variant="ghost" className="h-10">Pricing</Button>
+          </Link>
+          <Link to="/docs">
+            <Button variant="ghost" className="h-10">Docs</Button>
+          </Link>
 
           <ThemeToggle />
           
