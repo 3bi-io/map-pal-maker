@@ -61,6 +61,13 @@ const ThemeToggle = () => {
 const Navigation = () => {
   const { user, signOut } = useAuth();
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const getInitials = () => {
     if (!user?.email) return 'U';
@@ -68,8 +75,8 @@ const Navigation = () => {
   };
 
   return (
-    <nav className="border-b bg-card/80 backdrop-blur-md sticky top-0 z-50 safe-area-top" role="navigation" aria-label="Main navigation">
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+    <nav className={`border-b sticky top-0 z-50 safe-area-top transition-all duration-300 ${scrolled ? "bg-background/80 backdrop-blur-xl shadow-sm" : "bg-transparent backdrop-blur-md"}`} role="navigation" aria-label="Main navigation">
+      <div className={`container mx-auto px-4 flex items-center justify-between transition-all duration-300 ${scrolled ? "py-2" : "py-3"}`}>
         {/* Logo */}
         <Link to="/" className="flex items-center group" aria-label="MᴀᴘMᴇ.Lɪᴠᴇ Home">
           <Logo size="md" className="group-hover:scale-105 transition-transform" />
