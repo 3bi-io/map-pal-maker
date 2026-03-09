@@ -39,6 +39,7 @@ import type { Tracker } from '@/hooks/useTrackers';
 
 const Dashboard = () => {
   const { isProUser, subscription } = useSubscription();
+  const [portalLoading, setPortalLoading] = useState(false);
   const [deleteTrackerId, setDeleteTrackerId] = useState<string | null>(null);
   const [qrTracker, setQrTracker] = useState<Tracker | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
