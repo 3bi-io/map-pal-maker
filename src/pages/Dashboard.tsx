@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Plus, Copy, Trash2, ToggleLeft, ToggleRight, Clock, Map, QrCode, Pencil, Check, X, MoreVertical, RefreshCw } from 'lucide-react';
+import { MapPin, Plus, Copy, Trash2, ToggleLeft, ToggleRight, Clock, Map, QrCode, Pencil, Check, X, MoreVertical, RefreshCw, CreditCard, Loader2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { PullToRefreshIndicator, PullToRefreshContainer } from '@/components/PullToRefresh';
 import { Button } from '@/components/ui/button';
@@ -38,6 +39,7 @@ import type { Tracker } from '@/hooks/useTrackers';
 
 const Dashboard = () => {
   const { isProUser, subscription } = useSubscription();
+  const [portalLoading, setPortalLoading] = useState(false);
   const [deleteTrackerId, setDeleteTrackerId] = useState<string | null>(null);
   const [qrTracker, setQrTracker] = useState<Tracker | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -91,6 +93,23 @@ const Dashboard = () => {
     await refetch();
   }, [refetch]);
 
+  const handleManageSubscription = async () => {
+    setPortalLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await supabase.functions.invoke("manage-subscription", {
+        headers: { Authorization: `Bearer ${session?.access_token}` },
+      });
+      if (res.error) throw new Error(res.error.message);
+      const { url } = res.data;
+      if (url) window.location.href = url;
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message || "Failed to open billing portal.", variant: "destructive" });
+    } finally {
+      setPortalLoading(false);
+    }
+  };
+
   const handleCreateTracker = () => {
     createTracker();
     if (navigator.vibrate) navigator.vibrate(50);
@@ -126,9 +145,25 @@ const Dashboard = () => {
                 <div className="flex items-center gap-2">
                   <h1 className="text-2xl sm:text-3xl font-bold text-foreground">My Trackers</h1>
                   <Badge variant={isProUser ? "default" : "secondary"} className="text-xs">
-                    {isProUser ? "Pro" : "Free"}
+                  {isProUser ? "Pro" : "Free"}
                   </Badge>
                 </div>
+                {isProUser && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleManageSubscription}
+                    disabled={portalLoading}
+                    className="gap-1.5 mt-1"
+                  >
+                    {portalLoading ? (
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                    ) : (
+                      <CreditCard className="w-3 h-3" />
+                    )}
+                    Manage Subscription
+                  </Button>
+                )}
                 <p className="text-sm sm:text-base text-muted-foreground">
                   Create and manage your location trackers
                   {lastRefresh && (
