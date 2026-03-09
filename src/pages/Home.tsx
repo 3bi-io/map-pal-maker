@@ -49,7 +49,7 @@ const Home = () => {
             "@type": "ListItem",
             "position": 1,
             "name": "Home",
-            "item": "https://trackview.lovable.app"
+            "item": "https://mapme.live"
           }
         ]
       }
