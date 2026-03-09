@@ -24,6 +24,7 @@ const ValuePropBanner = () => {
 
   return (
     <section
+      id="value-prop"
       ref={ref}
       className={`py-16 sm:py-20 border-y border-border/50 bg-muted/30 transition-all duration-700 ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
