@@ -169,7 +169,15 @@ const Home = () => {
       <Layout showFooter>
         <main className="container mx-auto px-4">
           {/* Hero Section */}
-          <header className="py-10 sm:py-20 md:py-32 text-center space-y-5 sm:space-y-8">
+          <header className="relative py-10 sm:py-20 md:py-32 text-center space-y-5 sm:space-y-8 -mx-4 px-4 overflow-hidden">
+            {/* Hero background image */}
+            <div
+              className="absolute inset-0 -z-10 bg-cover bg-center bg-no-repeat"
+              style={{ backgroundImage: "url('/images/hero-bg.jpg')" }}
+              aria-hidden="true"
+            >
+              <div className="absolute inset-0 bg-background/80 dark:bg-background/70 backdrop-blur-[2px]" />
+            </div>
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full text-sm text-primary font-medium">
               <MapPin className="w-4 h-4" aria-hidden="true" />
               Location Tracking Made Simple
