@@ -63,6 +63,17 @@ const howItWorksSteps = [
 
 const Home = () => {
   const { user } = useAuth();
+  const heroBgRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (heroBgRef.current) {
+        heroBgRef.current.style.transform = `translateY(${window.scrollY * 0.4}px) scale(1.1)`;
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const structuredData = {
     "@context": "https://schema.org",
