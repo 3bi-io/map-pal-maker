@@ -27,10 +27,14 @@ const HowItWorksSection = () => {
     <section
       id="how-it-works"
       ref={ref}
-      className={`py-20 sm:py-24 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+      className={`py-20 sm:py-24 relative overflow-hidden transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
       aria-labelledby="how-it-works-heading"
     >
-      <div className="container mx-auto px-4">
+      <VideoBackground
+        src="https://stream.mux.com/JNJEOYI6B3EffB9f5ZhpGbuxzc6gSyJcXaCBbCgZKRg.m3u8"
+        overlayClassName="bg-background/70 dark:bg-background/75 [.oled_&]:bg-background/80"
+      />
+      <div className="container mx-auto px-4 relative z-10">
         <h2
           id="how-it-works-heading"
           className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-14"
