@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { MapPin, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import VideoBackground from "@/components/VideoBackground";
 
 const CTASection = () => {
   const { user } = useAuth();
