@@ -236,6 +236,7 @@ const Home = () => {
             </div>
           </header>
 
+          <div className="container mx-auto px-4">
           {/* Features Section */}
           <section
             className="py-10 sm:py-20 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto"
