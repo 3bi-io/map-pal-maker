@@ -1,5 +1,6 @@
 import { UserPlus, Share2, Eye } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import VideoBackground from "@/components/VideoBackground";
 
 const steps = [
   {
