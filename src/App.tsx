@@ -78,7 +78,7 @@ const App = () => (
                   </Routes>
                 </PageTransition>
               </BrowserRouter>
-              <InstallPrompt />
+              
               <CookieConsent />
             </TooltipProvider>
           </ErrorBoundary>
