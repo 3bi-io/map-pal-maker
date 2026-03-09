@@ -22,7 +22,7 @@ const Logo = ({ className, iconOnly = false, size = 'md' }: LogoProps) => {
 
         alt={iconOnly ? 'MᴀᴘMᴇ.Lɪᴠᴇ' : ''}
         className={cn('object-contain w-auto', icon)}
-        fetchPriority="high"
+        {...{ fetchpriority: "high" } as any}
         draggable={false} src="/lovable-uploads/30191504-f0fc-435f-a4d1-fc7535a1b086.png" />
       
       {!iconOnly &&
