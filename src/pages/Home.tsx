@@ -176,7 +176,7 @@ const Home = () => {
               style={{ backgroundImage: "url('/images/hero-bg.jpg')" }}
               aria-hidden="true"
             >
-              <div className="absolute inset-0 bg-background/80 dark:bg-background/70 backdrop-blur-[2px]" />
+              <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/40 to-background/90 dark:from-background/40 dark:via-background/20 dark:to-background/80" />
             </div>
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full text-sm text-primary font-medium">
               <MapPin className="w-4 h-4" aria-hidden="true" />
