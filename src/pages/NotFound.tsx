@@ -11,6 +11,7 @@ const NotFound = () => {
         description="The page you are looking for does not exist. Return to MᴀᴘMᴇ.Lɪᴠᴇ homepage to create tracking links and monitor device locations."
         keywords="404, page not found"
         canonical="https://mapme.live/404"
+        noindex
       />
       <div className="flex min-h-[100dvh] items-center justify-center bg-background px-4">
         <div className="text-center space-y-6" role="main">

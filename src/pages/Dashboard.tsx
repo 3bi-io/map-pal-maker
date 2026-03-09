@@ -105,8 +105,10 @@ const Dashboard = () => {
   return (
     <>
       <SEO
-        title="Dashboard - MᴀᴘMᴇ.Lɪᴠᴇ"
-        description="Manage your location trackers from your dashboard."
+        title="Dashboard - Manage Trackers | MᴀᴘMᴇ.Lɪᴠᴇ"
+        description="Create, manage, and monitor your real-time GPS location trackers. Generate tracking links, view live locations on a map, and control tracker settings."
+        canonical="https://mapme.live/dashboard"
+        noindex
       />
       <Layout>
         <PullToRefreshContainer ref={containerRef} className="sm:overflow-visible">

@@ -518,7 +518,9 @@ const MapView = () => {
     <>
       <SEO
         title={`Live Map - Tracking ${id} | MᴀᴘMᴇ.Lɪᴠᴇ`}
-        description={`View real-time location tracking on an interactive map for ID ${id}.`}
+        description={`View real-time GPS location tracking on an interactive map for tracker ${id}. Live updates, movement history, and speed data.`}
+        canonical={`https://mapme.live/map/${id}`}
+        noindex
         canonical={`https://mapme.live/map/${id}`}
       />
       <Layout showMobileNav={false}>

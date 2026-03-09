@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import MobileNav from "@/components/MobileNav";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -35,9 +36,16 @@ const Layout = ({
       </div>
       
       {showFooter && (
-        <footer className="border-t py-8 text-center text-sm text-muted-foreground">
+        <footer className="border-t py-8 sm:py-12 text-sm text-muted-foreground">
           <div className="container mx-auto px-4">
-            <p>© 2024 MᴀᴘMᴇ.Lɪᴠᴇ - All rights reserved.</p>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <p>© {new Date().getFullYear()} MᴀᴘMᴇ.Lɪᴠᴇ — Real-time location tracking platform.</p>
+              <nav aria-label="Footer navigation" className="flex gap-4">
+                <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
+                <Link to="/auth" className="hover:text-foreground transition-colors">Sign In</Link>
+                <Link to="/dashboard" className="hover:text-foreground transition-colors">Dashboard</Link>
+              </nav>
+            </div>
           </div>
         </footer>
       )}

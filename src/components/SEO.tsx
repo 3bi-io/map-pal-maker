@@ -8,19 +8,19 @@ interface SEOProps {
   ogType?: string;
   ogImage?: string;
   structuredData?: object;
+  noindex?: boolean;
 }
 
 const SEO = ({
-  title = "MᴀᴘMᴇ.Lɪᴠᴇ - Real-Time Location Tracking & Monitoring",
-  description = "Generate unique tracking links and monitor device locations in real-time. Instant location sharing, live map tracking, and secure tracking links for development and testing.",
+  title = "MᴀᴘMᴇ.Lɪᴠᴇ - Real-Time Location Tracking & GPS Monitoring",
+  description = "Generate unique tracking links and monitor device locations in real-time. Free location tracking with live map visualization, secure sharing, and terminal integration. Perfect for device monitoring and location-based applications.",
   keywords = "location tracking, GPS tracking, real-time tracking, location sharing, device tracking, map tracking, geo tracking, live location, tracking link, location monitor",
   canonical = "https://mapme.live",
   ogType = "website",
-  ogImage = "https://mapme.live/og-image.png",
+  ogImage = "https://storage.googleapis.com/gpt-engineer-file-uploads/iC4WGuGth9hul7BjQ42FtWwEb9C3/social-images/social-1773081056490-01a7b120-9dbd-4aa4-9a7f-1ff045a47dbf.webp",
   structuredData,
+  noindex = false,
 }: SEOProps) => {
-  const siteUrl = "https://mapme.live";
-
   return (
     <Helmet>
       {/* Primary Meta Tags */}
@@ -29,6 +29,11 @@ const SEO = ({
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
       <link rel="canonical" href={canonical} />
+      <meta name="author" content="MᴀᴘMᴇ.Lɪᴠᴇ" />
+      <meta
+        name="robots"
+        content={noindex ? "noindex, nofollow" : "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"}
+      />
 
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={ogType} />
@@ -38,6 +43,7 @@ const SEO = ({
       <meta property="og:image" content={ogImage} />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
+      <meta property="og:image:alt" content="MᴀᴘMᴇ.Lɪᴠᴇ - Real-Time Location Tracking Platform" />
       <meta property="og:site_name" content="MᴀᴘMᴇ.Lɪᴠᴇ" />
       <meta property="og:locale" content="en_US" />
 
@@ -47,13 +53,15 @@ const SEO = ({
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={ogImage} />
+      <meta name="twitter:image:alt" content="MᴀᴘMᴇ.Lɪᴠᴇ Location Tracking Platform" />
 
-      {/* Additional Meta Tags */}
-      <meta name="theme-color" content="#6366f1" />
+      {/* PWA & Mobile */}
+      <meta name="theme-color" content="#0ea5e9" />
       <meta name="format-detection" content="telephone=no" />
       <meta name="mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+      <meta name="apple-mobile-web-app-title" content="MapMe.Live" />
 
       {/* Preconnect for Performance */}
       <link rel="preconnect" href="https://api.mapbox.com" />
