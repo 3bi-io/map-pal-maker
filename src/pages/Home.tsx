@@ -167,16 +167,17 @@ const Home = () => {
         structuredData={structuredData}
       />
       <Layout showFooter>
-        <main className="container mx-auto px-4">
+        <main>
           {/* Hero Section */}
-          <header className="relative py-10 sm:py-20 md:py-32 text-center space-y-5 sm:space-y-8 -mx-4 px-4 overflow-hidden">
+          <header className="relative py-16 sm:py-24 md:py-36 text-center space-y-5 sm:space-y-8 px-4 overflow-hidden">
             {/* Hero background image */}
             <div
               className="absolute inset-0 -z-10 bg-cover bg-center bg-no-repeat"
               style={{ backgroundImage: "url('/images/hero-bg.jpg')" }}
               aria-hidden="true"
             >
-              <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/40 to-background/90 dark:from-background/40 dark:via-background/20 dark:to-background/80" />
+              {/* Light mode: heavier overlay for readability; Dark/OLED: light overlay to let the image shine */}
+              <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/50 to-background dark:from-background/30 dark:via-background/10 dark:to-background/70" />
             </div>
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full text-sm text-primary font-medium">
               <MapPin className="w-4 h-4" aria-hidden="true" />
