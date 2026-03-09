@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { MapPin, Link2, Map, Shield, UserPlus, Share2, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
