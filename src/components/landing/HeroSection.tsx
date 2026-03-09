@@ -89,7 +89,7 @@ const HeroSection = () => {
         style={{ backgroundImage: "url('/images/hero-bg.jpg')" }}
       />
       {/* Theme-aware overlay for text readability */}
-      <div className="absolute inset-0 -z-10 bg-background/70 dark:bg-background/80 [.oled_&]:bg-background/85" />
+      <div className="absolute inset-0 -z-10 bg-background/50 dark:bg-background/60 [.oled_&]:bg-background/70" />
       {/* Gradient accent overlay */}
       <div
         className="absolute inset-0 -z-10 opacity-40"
