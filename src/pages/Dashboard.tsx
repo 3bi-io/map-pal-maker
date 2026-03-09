@@ -93,6 +93,23 @@ const Dashboard = () => {
     await refetch();
   }, [refetch]);
 
+  const handleManageSubscription = async () => {
+    setPortalLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await supabase.functions.invoke("manage-subscription", {
+        headers: { Authorization: `Bearer ${session?.access_token}` },
+      });
+      if (res.error) throw new Error(res.error.message);
+      const { url } = res.data;
+      if (url) window.location.href = url;
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message || "Failed to open billing portal.", variant: "destructive" });
+    } finally {
+      setPortalLoading(false);
+    }
+  };
+
   const handleCreateTracker = () => {
     createTracker();
     if (navigator.vibrate) navigator.vibrate(50);
