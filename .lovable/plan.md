@@ -1,24 +1,11 @@
 
 
-## Remove False Metrics from Homepage
+## Replace Logo Icon with New Image
 
-The app is new, so fabricated social proof undermines credibility. Three areas contain false metrics:
+The user uploaded a new map pin icon (blue/cyan gradient with orbital ring and sparkle) to replace the current `logo-icon.png`.
 
-### 1. Remove SocialProofBar entirely
-The entire `SocialProofBar` component shows fake stats (10,000+ links, 150+ countries, 4.9/5 rating). Remove it from `Home.tsx` and optionally delete the component file.
+### Plan
 
-### 2. Remove TestimonialsSection entirely
-Contains 3 fabricated testimonials with fake names and quotes. Remove from `Home.tsx`.
-
-### 3. Remove fake aggregateRating from structured data
-The `structuredData` in `Home.tsx` includes a fabricated `aggregateRating` (4.8 stars, 127 reviews). Remove that block to avoid misleading search engines.
-
-### 4. Update TestimonialsSection heading reference
-The heading "Trusted by Thousands" is also false — removing the whole section handles this.
-
-### Files changed
-- **`src/pages/Home.tsx`**: Remove `SocialProofBar` and `TestimonialsSection` imports/usage; remove `aggregateRating` from structured data.
-- **Optionally delete**: `src/components/landing/SocialProofBar.tsx` and `src/components/landing/TestimonialsSection.tsx` (dead code cleanup).
-
-The remaining sections (Features, Use Cases, How It Works, FAQ, CTA) describe product capabilities — not fabricated metrics — so they stay.
+1. **Copy the uploaded image** to `src/assets/logo-icon.png`, replacing the existing icon
+2. **No code changes needed** — `Logo.tsx` already imports from `@/assets/logo-icon.png` and renders it with CSS text, so the new image will automatically appear in all contexts (navbar, auth, reset password) across all themes
 

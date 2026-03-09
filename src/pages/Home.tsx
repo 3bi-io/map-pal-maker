@@ -1,11 +1,9 @@
 import SEO from "@/components/SEO";
 import Layout from "@/components/Layout";
 import HeroSection from "@/components/landing/HeroSection";
-import SocialProofBar from "@/components/landing/SocialProofBar";
 import FeaturesSection from "@/components/landing/FeaturesSection";
 import UseCasesSection from "@/components/landing/UseCasesSection";
 import HowItWorksSection from "@/components/landing/HowItWorksSection";
-import TestimonialsSection from "@/components/landing/TestimonialsSection";
 import FAQSection from "@/components/landing/FAQSection";
 import CTASection from "@/components/landing/CTASection";
 import Footer from "@/components/landing/Footer";
@@ -32,11 +30,6 @@ const structuredData = {
       applicationCategory: "UtilityApplication",
       operatingSystem: "Web Browser",
       offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-      aggregateRating: {
-        "@type": "AggregateRating",
-        ratingValue: "4.8",
-        ratingCount: "127",
-      },
     },
     {
       "@type": "FAQPage",
@@ -81,11 +74,9 @@ const Home = () => {
       <Layout showFooter={false}>
         <main>
           <HeroSection />
-          <SocialProofBar />
           <FeaturesSection />
           <UseCasesSection />
           <HowItWorksSection />
-          <TestimonialsSection />
           <FAQSection />
           <CTASection />
         </main>
