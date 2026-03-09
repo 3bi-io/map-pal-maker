@@ -52,18 +52,8 @@ const HeroSection = () => {
       {/* Video background (desktop only, handled inside component) */}
       <VideoBackground
         src="https://stream.mux.com/JNJEOYI6B3EffB9f5ZhpGbuxzc6gSyJcXaCBbCgZKRg.m3u8"
-        poster="/images/hero-bg.jpg"
         overlayClassName="bg-background/50 dark:bg-background/60 [.oled_&]:bg-background/70"
       />
-
-      {/* Static fallback for mobile (video is hidden sm:block) */}
-      <div
-        className="absolute inset-0 sm:hidden bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/images/hero-bg.jpg')" }}
-        aria-hidden="true"
-      />
-      {/* Overlay for mobile fallback */}
-      <div className="absolute inset-0 sm:hidden bg-background/50 dark:bg-background/60 [.oled_&]:bg-background/70" />
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
