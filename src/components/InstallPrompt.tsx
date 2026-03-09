@@ -44,7 +44,7 @@ const InstallPrompt = () => {
             <Smartphone className="w-5 h-5 text-primary-foreground" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-foreground">Install TrackView</h3>
+            <h3 className="font-semibold text-foreground">Install MᴀᴘMᴇ.Lɪᴠᴇ</h3>
             <p className="text-sm text-muted-foreground mt-1">
               {isIOS 
                 ? 'Tap Share then "Add to Home Screen" to install'

@@ -7,7 +7,7 @@ Disallow: /map/
 Disallow: /track/
 
 # Sitemap location
-Sitemap: https://geofollower.lovable.app/sitemap.xml
+Sitemap: https://mapme.live/sitemap.xml
 
 # Crawl delay (optional, helps prevent server overload)
 Crawl-delay: 1

@@ -517,9 +517,9 @@ const MapView = () => {
   return (
     <>
       <SEO
-        title={`Live Map - Tracking ${id} | TrackView`}
+        title={`Live Map - Tracking ${id} | MᴀᴘMᴇ.Lɪᴠᴇ`}
         description={`View real-time location tracking on an interactive map for ID ${id}.`}
-        canonical={`https://trackview.lovable.app/map/${id}`}
+        canonical={`https://mapme.live/map/${id}`}
       />
       <Layout showMobileNav={false}>
         <main className={`flex-1 ${isMobile ? '' : 'container mx-auto px-2 sm:px-4 py-2 sm:py-4'}`}>

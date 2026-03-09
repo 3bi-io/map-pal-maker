@@ -151,7 +151,7 @@ const TrackView = () => {
   if (status === "invalid") {
     return (
       <>
-        <SEO title="Invalid Tracker | TrackView" description="This tracking link is invalid or has expired." />
+        <SEO title="Invalid Tracker | MᴀᴘMᴇ.Lɪᴠᴇ" description="This tracking link is invalid or has expired." />
         <Layout>
           <main className="container mx-auto px-4 py-8 sm:py-12">
             <div className="max-w-md mx-auto text-center space-y-6">
@@ -173,9 +173,9 @@ const TrackView = () => {
   return (
     <>
       <SEO
-        title={`Enable Location Tracking - ${trackerInfo?.name || 'Tracker'} | TrackView`}
+        title={`Enable Location Tracking - ${trackerInfo?.name || 'Tracker'} | MᴀᴘMᴇ.Lɪᴠᴇ`}
         description={`Start sharing your real-time location for tracking ID ${id}.`}
-        canonical={`https://trackview.lovable.app/track/${id}`}
+        canonical={`https://mapme.live/track/${id}`}
       />
       <Layout>
         <main className="container mx-auto px-4 py-8 sm:py-12">

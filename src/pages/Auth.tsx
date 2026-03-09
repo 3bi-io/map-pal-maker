@@ -151,14 +151,14 @@ const Auth = () => {
   return (
     <>
       <SEO
-        title={`${getTitle()} - TrackView`}
+        title={`${getTitle()} - MᴀᴘMᴇ.Lɪᴠᴇ`}
         description="Sign in or create an account to manage your location trackers."
       />
       <div className="min-h-[100dvh] bg-gradient-background flex items-center justify-center p-4 safe-area-top safe-area-bottom">
         <Card className="w-full max-w-md shadow-elevated rounded-xl">
           <CardHeader className="text-center space-y-4">
             <div className="flex justify-center">
-              <Link to="/" aria-label="TrackView Home">
+              <Link to="/" aria-label="MᴀᴘMᴇ.Lɪᴠᴇ Home">
                 <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center shadow-card">
                   <MapPin className="w-8 h-8 text-primary-foreground" />
                 </div>

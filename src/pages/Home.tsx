@@ -14,20 +14,20 @@ const Home = () => {
     "@graph": [
       {
         "@type": "Organization",
-        "name": "TrackView",
-        "url": "https://trackview.lovable.app",
-        "logo": "https://trackview.lovable.app/og-image.png",
+        "name": "MᴀᴘMᴇ.Lɪᴠᴇ",
+        "url": "https://mapme.live",
+        "logo": "https://mapme.live/og-image.png",
         "description": "Real-time location tracking and monitoring platform"
       },
       {
         "@type": "WebSite",
-        "name": "TrackView",
-        "url": "https://trackview.lovable.app"
+        "name": "MᴀᴘMᴇ.Lɪᴠᴇ",
+        "url": "https://mapme.live"
       },
       {
         "@type": "WebApplication",
-        "name": "TrackView",
-        "url": "https://trackview.lovable.app",
+        "name": "MᴀᴘMᴇ.Lɪᴠᴇ",
+        "url": "https://mapme.live",
         "applicationCategory": "UtilityApplication",
         "operatingSystem": "Web Browser",
         "offers": {
@@ -49,7 +49,7 @@ const Home = () => {
             "@type": "ListItem",
             "position": 1,
             "name": "Home",
-            "item": "https://trackview.lovable.app"
+            "item": "https://mapme.live"
           }
         ]
       }
@@ -73,10 +73,10 @@ const Home = () => {
   return (
     <>
       <SEO
-        title="TrackView - Real-Time Location Tracking & GPS Monitoring"
+        title="MᴀᴘMᴇ.Lɪᴠᴇ - Real-Time Location Tracking & GPS Monitoring"
         description="Generate unique tracking links and monitor device locations in real-time. Free location tracking with live map visualization, secure sharing, and terminal integration."
         keywords="location tracking, GPS tracking, real-time tracking, location sharing, device tracking, map tracking, live location, tracking link"
-        canonical="https://trackview.lovable.app/"
+        canonical="https://mapme.live/"
         structuredData={structuredData}
       />
       <Layout showFooter>

@@ -105,7 +105,7 @@ const Dashboard = () => {
   return (
     <>
       <SEO
-        title="Dashboard - TrackView"
+        title="Dashboard - MᴀᴘMᴇ.Lɪᴠᴇ"
         description="Manage your location trackers from your dashboard."
       />
       <Layout>

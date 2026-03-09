@@ -11,15 +11,15 @@ interface SEOProps {
 }
 
 const SEO = ({
-  title = "TrackView - Real-Time Location Tracking & Monitoring",
+  title = "MᴀᴘMᴇ.Lɪᴠᴇ - Real-Time Location Tracking & Monitoring",
   description = "Generate unique tracking links and monitor device locations in real-time. Instant location sharing, live map tracking, and secure tracking links for development and testing.",
   keywords = "location tracking, GPS tracking, real-time tracking, location sharing, device tracking, map tracking, geo tracking, live location, tracking link, location monitor",
-  canonical = "https://trackview.lovable.app",
+  canonical = "https://mapme.live",
   ogType = "website",
-  ogImage = "https://trackview.lovable.app/og-image.png",
+  ogImage = "https://mapme.live/og-image.png",
   structuredData,
 }: SEOProps) => {
-  const siteUrl = "https://trackview.lovable.app";
+  const siteUrl = "https://mapme.live";
 
   return (
     <Helmet>
@@ -38,7 +38,7 @@ const SEO = ({
       <meta property="og:image" content={ogImage} />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
-      <meta property="og:site_name" content="TrackView" />
+      <meta property="og:site_name" content="MᴀᴘMᴇ.Lɪᴠᴇ" />
       <meta property="og:locale" content="en_US" />
 
       {/* Twitter */}
