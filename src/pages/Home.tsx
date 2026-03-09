@@ -1,6 +1,7 @@
 import SEO from "@/components/SEO";
 import Layout from "@/components/Layout";
 import HeroSection from "@/components/landing/HeroSection";
+import ValuePropBanner from "@/components/landing/ValuePropBanner";
 import FeaturesSection from "@/components/landing/FeaturesSection";
 import UseCasesSection from "@/components/landing/UseCasesSection";
 import HowItWorksSection from "@/components/landing/HowItWorksSection";
