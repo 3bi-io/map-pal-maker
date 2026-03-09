@@ -72,7 +72,7 @@ const Navigation = () => {
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center group" aria-label="MᴀᴘMᴇ.Lɪᴠᴇ Home">
-          <Logo className="h-9 sm:h-10 group-hover:scale-105 transition-transform" />
+          <Logo size="md" className="group-hover:scale-105 transition-transform" />
         </Link>
         
         {/* Desktop Navigation */}

@@ -160,7 +160,7 @@ const Auth = () => {
           <CardHeader className="text-center space-y-4">
             <div className="flex justify-center">
               <Link to="/" aria-label="MᴀᴘMᴇ.Lɪᴠᴇ Home">
-                <Logo className="h-20" />
+                <Logo size="lg" className="justify-center" />
               </Link>
             </div>
             <div>
