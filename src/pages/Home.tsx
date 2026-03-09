@@ -14,20 +14,20 @@ const Home = () => {
     "@graph": [
       {
         "@type": "Organization",
-        "name": "TrackView",
-        "url": "https://trackview.lovable.app",
-        "logo": "https://trackview.lovable.app/og-image.png",
+        "name": "MᴀᴘMᴇ.Lɪᴠᴇ",
+        "url": "https://mapme.live",
+        "logo": "https://mapme.live/og-image.png",
         "description": "Real-time location tracking and monitoring platform"
       },
       {
         "@type": "WebSite",
-        "name": "TrackView",
-        "url": "https://trackview.lovable.app"
+        "name": "MᴀᴘMᴇ.Lɪᴠᴇ",
+        "url": "https://mapme.live"
       },
       {
         "@type": "WebApplication",
-        "name": "TrackView",
-        "url": "https://trackview.lovable.app",
+        "name": "MᴀᴘMᴇ.Lɪᴠᴇ",
+        "url": "https://mapme.live",
         "applicationCategory": "UtilityApplication",
         "operatingSystem": "Web Browser",
         "offers": {
