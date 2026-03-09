@@ -83,7 +83,7 @@ const ResetPassword = () => {
           <Card className="w-full max-w-md shadow-elevated text-center">
             <CardHeader>
               <div className="flex justify-center mb-4">
-                <Logo className="h-20" />
+                <Logo size="lg" className="justify-center" />
               </div>
               <CardTitle>Invalid Reset Link</CardTitle>
               <CardDescription>
