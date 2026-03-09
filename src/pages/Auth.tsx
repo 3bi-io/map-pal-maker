@@ -153,7 +153,8 @@ const Auth = () => {
     <>
       <SEO
         title={`${getTitle()} - MᴀᴘMᴇ.Lɪᴠᴇ`}
-        description="Sign in or create an account to manage your location trackers."
+        description="Sign in or create a free account to generate tracking links and monitor device locations in real-time."
+        canonical="https://mapme.live/auth"
       />
       <div className="min-h-[100dvh] bg-gradient-background flex items-center justify-center p-4 safe-area-top safe-area-bottom">
         <Card className="w-full max-w-md shadow-elevated rounded-xl">
