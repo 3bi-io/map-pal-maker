@@ -151,7 +151,7 @@ const Auth = () => {
   return (
     <>
       <SEO
-        title={`${getTitle()} - TrackView`}
+        title={`${getTitle()} - MᴀᴘMᴇ.Lɪᴠᴇ`}
         description="Sign in or create an account to manage your location trackers."
       />
       <div className="min-h-[100dvh] bg-gradient-background flex items-center justify-center p-4 safe-area-top safe-area-bottom">
