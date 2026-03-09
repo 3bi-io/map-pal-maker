@@ -18,6 +18,8 @@ import MapView from "./pages/MapView";
 import TrackView from "./pages/TrackView";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
 
 const queryClient = new QueryClient();
 
@@ -49,6 +51,8 @@ const App = () => (
                       </ProtectedRoute>
                     } />
                     <Route path="/track/:id" element={<TrackView />} />
+                    <Route path="/privacy" element={<PrivacyPolicy />} />
+                    <Route path="/terms" element={<TermsOfService />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </PageTransition>

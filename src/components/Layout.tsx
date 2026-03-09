@@ -40,10 +40,12 @@ const Layout = ({
           <div className="container mx-auto px-4">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <p>© {new Date().getFullYear()} MᴀᴘMᴇ.Lɪᴠᴇ — Real-time location tracking platform.</p>
-              <nav aria-label="Footer navigation" className="flex gap-4">
+              <nav aria-label="Footer navigation" className="flex flex-wrap gap-4">
                 <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
                 <Link to="/auth" className="hover:text-foreground transition-colors">Sign In</Link>
                 <Link to="/dashboard" className="hover:text-foreground transition-colors">Dashboard</Link>
+                <Link to="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
+                <Link to="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link>
               </nav>
             </div>
           </div>

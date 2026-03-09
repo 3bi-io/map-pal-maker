@@ -28,4 +28,20 @@
     <priority>0.7</priority>
   </url>
 
+  <!-- Privacy Policy -->
+  <url>
+    <loc>https://mapme.live/privacy</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- Terms of Service -->
+  <url>
+    <loc>https://mapme.live/terms</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
 </urlset>
