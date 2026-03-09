@@ -123,7 +123,12 @@ const Dashboard = () => {
           <main className="container mx-auto px-4 py-6 sm:py-8" aria-label="Dashboard">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-foreground">My Trackers</h1>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-2xl sm:text-3xl font-bold text-foreground">My Trackers</h1>
+                  <Badge variant={isProUser ? "default" : "secondary"} className="text-xs">
+                    {isProUser ? "Pro" : "Free"}
+                  </Badge>
+                </div>
                 <p className="text-sm sm:text-base text-muted-foreground">
                   Create and manage your location trackers
                   {lastRefresh && (

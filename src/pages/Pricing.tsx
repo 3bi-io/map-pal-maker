@@ -1,11 +1,19 @@
-import { Check, Star, Zap, Building2 } from "lucide-react";
+import { useState } from "react";
+import { Check, Star, Zap, Building2, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { useSubscription } from "@/hooks/useSubscription";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+
+const PRO_PRICE_ID = "price_REPLACE_WITH_YOUR_STRIPE_PRICE_ID";
 
 const plans = [
   {
@@ -15,7 +23,7 @@ const plans = [
     period: "forever",
     description: "Perfect for personal tracking and small projects.",
     cta: "Get Started Free",
-    highlighted: true,
+    highlighted: false,
     features: [
       "Up to 5 active trackers",
       "Real-time location updates",
@@ -31,8 +39,8 @@ const plans = [
     price: "$12",
     period: "/month",
     description: "For teams and professionals who need more power.",
-    cta: "Start Pro Trial",
-    highlighted: false,
+    cta: "Upgrade to Pro",
+    highlighted: true,
     features: [
       "Unlimited active trackers",
       "Real-time location updates",
@@ -76,6 +84,37 @@ const faqs = [
 const Pricing = () => {
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation();
   const { ref: faqRef, isVisible: faqVisible } = useScrollAnimation();
+  const { user } = useAuth();
+  const { isProUser } = useSubscription();
+  const { toast } = useToast();
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+
+  const handleUpgrade = async () => {
+    if (!user) {
+      window.location.href = "/auth";
+      return;
+    }
+
+    setCheckoutLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await supabase.functions.invoke("create-checkout-session", {
+        body: { priceId: PRO_PRICE_ID },
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+      });
+
+      if (res.error) throw new Error(res.error.message);
+      const { url } = res.data;
+      if (url) window.location.href = url;
+    } catch (err: any) {
+      console.error("Checkout error:", err);
+      toast({ title: "Error", description: err.message || "Failed to start checkout.", variant: "destructive" });
+    } finally {
+      setCheckoutLoading(false);
+    }
+  };
 
   const breadcrumbData = {
     "@context": "https://schema.org",
@@ -147,15 +186,34 @@ const Pricing = () => {
                 </ul>
               </CardContent>
               <CardFooter>
-                <Button
-                  asChild
-                  className="w-full"
-                  variant={plan.highlighted ? "default" : "outline"}
-                >
-                  <Link to={plan.name === "Enterprise" ? "/contact" : "/auth"}>
-                    {plan.cta}
-                  </Link>
-                </Button>
+                {plan.name === "Pro" ? (
+                  isProUser ? (
+                    <Badge className="w-full justify-center py-2 text-sm">Current Plan</Badge>
+                  ) : (
+                    <Button
+                      className="w-full"
+                      onClick={handleUpgrade}
+                      disabled={checkoutLoading}
+                    >
+                      {checkoutLoading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                          Redirecting…
+                        </>
+                      ) : (
+                        plan.cta
+                      )}
+                    </Button>
+                  )
+                ) : plan.name === "Enterprise" ? (
+                  <Button asChild className="w-full" variant="outline">
+                    <Link to="/contact">{plan.cta}</Link>
+                  </Button>
+                ) : (
+                  <Button asChild className="w-full" variant="outline">
+                    <Link to={user ? "/dashboard" : "/auth"}>{plan.cta}</Link>
+                  </Button>
+                )}
               </CardFooter>
             </Card>
           ))}

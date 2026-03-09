@@ -72,6 +72,8 @@ const App = () => (
                     <Route path="/api" element={<ApiReference />} />
                     <Route path="/status" element={<Status />} />
                     <Route path="/cookies" element={<CookiePolicy />} />
+                    <Route path="/subscription/success" element={<SubscriptionSuccess />} />
+                    <Route path="/subscription/cancel" element={<SubscriptionCancel />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </PageTransition>
