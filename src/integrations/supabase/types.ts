@@ -164,6 +164,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_tracker_active: { Args: { p_tracking_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "user"
