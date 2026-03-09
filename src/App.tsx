@@ -78,7 +78,6 @@ const App = () => (
                   </Routes>
                 </PageTransition>
               </BrowserRouter>
-              
               <CookieConsent />
             </TooltipProvider>
           </ErrorBoundary>
