@@ -2,22 +2,19 @@ import { Link } from "react-router-dom";
 import { MapPin, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import VideoBackground from "@/components/VideoBackground";
 
 const CTASection = () => {
   const { user } = useAuth();
 
   return (
     <aside className="py-20 sm:py-24 relative overflow-hidden" aria-label="Call to action">
-      {/* Glow background */}
-      <div
-        className="absolute inset-0 -z-10 opacity-20"
-        style={{
-          background:
-            "radial-gradient(ellipse 70% 50% at 50% 50%, hsl(var(--primary) / 0.3), transparent)",
-        }}
+      <VideoBackground
+        src="https://stream.mux.com/JNJEOYI6B3EffB9f5ZhpGbuxzc6gSyJcXaCBbCgZKRg.m3u8"
+        overlayClassName="bg-background/60 dark:bg-background/70 [.oled_&]:bg-background/75"
       />
 
-      <div className="container mx-auto px-4 text-center max-w-3xl space-y-6">
+      <div className="container mx-auto px-4 text-center max-w-3xl space-y-6 relative z-10">
         <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-foreground">
           Start Tracking for Free —{" "}
           <span className="text-transparent bg-clip-text bg-gradient-primary">

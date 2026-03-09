@@ -1,5 +1,6 @@
 import { Check, Link2, Map, Shield } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import VideoBackground from "@/components/VideoBackground";
 
 const features = [
   {
@@ -156,10 +157,14 @@ const FeatureRow = ({
 
 const FeaturesSection = () => (
   <section
-    className="py-20 sm:py-24"
+    className="py-20 sm:py-24 relative overflow-hidden"
     aria-labelledby="features-heading"
   >
-    <div className="container mx-auto px-4">
+    <VideoBackground
+      src="https://stream.mux.com/JNJEOYI6B3EffB9f5ZhpGbuxzc6gSyJcXaCBbCgZKRg.m3u8"
+      overlayClassName="bg-background/70 dark:bg-background/75 [.oled_&]:bg-background/80"
+    />
+    <div className="container mx-auto px-4 relative z-10">
       <h2
         id="features-heading"
         className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-14"
