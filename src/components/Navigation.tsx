@@ -75,8 +75,8 @@ const Navigation = () => {
             <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-primary-foreground" />
           </div>
           <div className="hidden xs:block">
-            <h1 className="text-lg sm:text-xl font-bold text-foreground leading-tight">TrackView</h1>
-            <p className="text-[10px] sm:text-xs text-muted-foreground leading-none">REAL-TIME TRACKING</p>
+            <h1 className="text-lg sm:text-xl font-bold text-foreground leading-tight">MᴀᴘMᴇ.Lɪᴠᴇ</h1>
+            <p className="text-[10px] sm:text-xs text-muted-foreground leading-none">LIVE TRACKING</p>
           </div>
         </Link>
         
