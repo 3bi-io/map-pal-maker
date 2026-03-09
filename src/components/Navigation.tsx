@@ -1,4 +1,4 @@
-import { LogOut, LayoutDashboard, User, Sun, Moon, Smartphone, Menu, MapPin } from "lucide-react";
+import { LogOut, LayoutDashboard, User, Sun, Moon, Smartphone, Menu, MapPin, Tag, BookOpen } from "lucide-react";
 import Logo from "@/components/Logo";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
