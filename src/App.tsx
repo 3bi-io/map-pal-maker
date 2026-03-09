@@ -21,6 +21,14 @@ import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
+import Pricing from "./pages/Pricing";
+import About from "./pages/About";
+import Blog from "./pages/Blog";
+import Contact from "./pages/Contact";
+import Docs from "./pages/Docs";
+import ApiReference from "./pages/ApiReference";
+import Status from "./pages/Status";
+import CookiePolicy from "./pages/CookiePolicy";
 
 const queryClient = new QueryClient();
 
@@ -54,6 +62,14 @@ const App = () => (
                     <Route path="/track/:id" element={<TrackView />} />
                     <Route path="/privacy" element={<PrivacyPolicy />} />
                     <Route path="/terms" element={<TermsOfService />} />
+                    <Route path="/pricing" element={<Pricing />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/blog" element={<Blog />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/docs" element={<Docs />} />
+                    <Route path="/api" element={<ApiReference />} />
+                    <Route path="/status" element={<Status />} />
+                    <Route path="/cookies" element={<CookiePolicy />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </PageTransition>
