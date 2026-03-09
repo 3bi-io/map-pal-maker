@@ -9,6 +9,7 @@ import { ThemeProvider } from "@/hooks/useTheme";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import InstallPrompt from "@/components/InstallPrompt";
 import OfflineIndicator from "@/components/OfflineIndicator";
+import CookieConsent from "@/components/CookieConsent";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import PageTransition from "@/components/PageTransition";
 import Home from "./pages/Home";
