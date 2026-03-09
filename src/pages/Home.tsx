@@ -351,6 +351,7 @@ const Home = () => {
               </Link>
             </Card>
           </aside>
+          </div>
         </main>
       </Layout>
     </>
