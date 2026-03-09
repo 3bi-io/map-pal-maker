@@ -62,6 +62,14 @@ const App = () => (
                     <Route path="/track/:id" element={<TrackView />} />
                     <Route path="/privacy" element={<PrivacyPolicy />} />
                     <Route path="/terms" element={<TermsOfService />} />
+                    <Route path="/pricing" element={<Pricing />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/blog" element={<Blog />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/docs" element={<Docs />} />
+                    <Route path="/api" element={<ApiReference />} />
+                    <Route path="/status" element={<Status />} />
+                    <Route path="/cookies" element={<CookiePolicy />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </PageTransition>

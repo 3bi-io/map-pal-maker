@@ -9,23 +9,23 @@ import { toast } from "sonner";
 const footerLinks = {
   Product: [
     { label: "Dashboard", to: "/dashboard" },
-    { label: "Map View", to: "/map" },
-    { label: "Pricing", to: "/#" },
+    { label: "Pricing", to: "/pricing" },
+    { label: "Documentation", to: "/docs" },
   ],
   Company: [
-    { label: "About", to: "/#" },
-    { label: "Blog", to: "/#" },
-    { label: "Contact", to: "/#" },
+    { label: "About", to: "/about" },
+    { label: "Blog", to: "/blog" },
+    { label: "Contact", to: "/contact" },
   ],
   Resources: [
-    { label: "Documentation", to: "/#" },
-    { label: "API Reference", to: "/#" },
-    { label: "Status", to: "/#" },
+    { label: "API Reference", to: "/api" },
+    { label: "Status", to: "/status" },
+    { label: "Changelog", to: "/blog" },
   ],
   Legal: [
     { label: "Privacy Policy", to: "/privacy" },
     { label: "Terms of Service", to: "/terms" },
-    { label: "Cookie Policy", to: "/privacy" },
+    { label: "Cookie Policy", to: "/cookies" },
   ],
 };
 
