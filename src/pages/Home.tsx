@@ -177,7 +177,7 @@ const Home = () => {
               aria-hidden="true"
             >
               {/* Light mode: heavier overlay for readability; Dark/OLED: light overlay to let the image shine */}
-              <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/50 to-background dark:from-background/30 dark:via-background/10 dark:to-background/70" />
+              <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/20 to-background dark:from-background/20 dark:via-background/5 dark:to-background/60" />
             </div>
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full text-sm text-primary font-medium">
               <MapPin className="w-4 h-4" aria-hidden="true" />
