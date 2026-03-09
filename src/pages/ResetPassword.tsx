@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Lock, Eye, EyeOff, CheckCircle } from 'lucide-react';
+import { Lock, Eye, EyeOff, CheckCircle } from 'lucide-react';
+import Logo from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -82,9 +83,7 @@ const ResetPassword = () => {
           <Card className="w-full max-w-md shadow-elevated text-center">
             <CardHeader>
               <div className="flex justify-center mb-4">
-                <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center shadow-card">
-                  <MapPin className="w-8 h-8 text-primary-foreground" />
-                </div>
+                <Logo className="h-20" />
               </div>
               <CardTitle>Invalid Reset Link</CardTitle>
               <CardDescription>
@@ -130,9 +129,7 @@ const ResetPassword = () => {
         <Card className="w-full max-w-md shadow-elevated">
           <CardHeader className="text-center space-y-4">
             <div className="flex justify-center">
-              <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center shadow-card">
-                <MapPin className="w-8 h-8 text-primary-foreground" />
-              </div>
+              <Logo className="h-20" />
             </div>
             <div>
               <CardTitle className="text-2xl">Set New Password</CardTitle>

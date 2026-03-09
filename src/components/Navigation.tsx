@@ -1,4 +1,5 @@
-import { MapPin, LogOut, LayoutDashboard, User, Sun, Moon, Smartphone, Menu } from "lucide-react";
+import { LogOut, LayoutDashboard, User, Sun, Moon, Smartphone, Menu, MapPin } from "lucide-react";
+import Logo from "@/components/Logo";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -70,14 +71,8 @@ const Navigation = () => {
     <nav className="border-b bg-card/80 backdrop-blur-md sticky top-0 z-50 safe-area-top" role="navigation" aria-label="Main navigation">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 group" aria-label="MᴀᴘMᴇ.Lɪᴠᴇ Home">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-primary flex items-center justify-center shadow-card group-hover:scale-105 transition-transform">
-            <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-primary-foreground" />
-          </div>
-          <div className="hidden sm:block">
-            <h1 className="text-lg sm:text-xl font-bold text-foreground leading-tight">MᴀᴘMᴇ.Lɪᴠᴇ</h1>
-            <p className="text-[10px] sm:text-xs text-muted-foreground leading-none">LIVE TRACKING</p>
-          </div>
+        <Link to="/" className="flex items-center group" aria-label="MᴀᴘMᴇ.Lɪᴠᴇ Home">
+          <Logo className="h-9 sm:h-10 group-hover:scale-105 transition-transform" />
         </Link>
         
         {/* Desktop Navigation */}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { MapPin, Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
+import Logo from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -159,9 +160,7 @@ const Auth = () => {
           <CardHeader className="text-center space-y-4">
             <div className="flex justify-center">
               <Link to="/" aria-label="MᴀᴘMᴇ.Lɪᴠᴇ Home">
-                <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center shadow-card">
-                  <MapPin className="w-8 h-8 text-primary-foreground" />
-                </div>
+                <Logo className="h-20" />
               </Link>
             </div>
             <div>
