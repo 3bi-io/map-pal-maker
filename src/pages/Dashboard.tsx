@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Plus, Copy, Trash2, ToggleLeft, ToggleRight, Clock, Map, QrCode, Pencil, Check, X, MoreVertical, RefreshCw, CreditCard, Loader2 } from 'lucide-react';
+import { MapPin, Plus, Copy, Trash2, ToggleLeft, ToggleRight, Clock, Map, QrCode, Pencil, Check, X, MoreVertical, RefreshCw, CreditCard, Loader2, Sparkles } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { PullToRefreshIndicator, PullToRefreshContainer } from '@/components/PullToRefresh';
@@ -191,6 +191,30 @@ const Dashboard = () => {
                 </Button>
               </div>
             </div>
+
+            {!isProUser && !loading && (
+              <Card className="border-primary/20 bg-primary/5 shadow-card rounded-xl mb-6">
+                <CardContent className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 py-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <Sparkles className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground">Upgrade to Pro</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Unlock unlimited trackers, longer history, and priority support.
+                      </p>
+                    </div>
+                  </div>
+                  <Link to="/pricing">
+                    <Button size="sm" className="gap-1.5 shrink-0">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      View Plans
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            )}
 
             {loading ? (
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
