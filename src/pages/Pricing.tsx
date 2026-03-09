@@ -13,7 +13,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
-const PRO_PRICE_ID = "price_REPLACE_WITH_YOUR_STRIPE_PRICE_ID";
+const PRO_PRICE_ID = "price_1SanVv2MfT7OzvjxIHQptGbC";
 
 const plans = [
   {
