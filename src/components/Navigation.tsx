@@ -1,4 +1,5 @@
-import { MapPin, LogOut, LayoutDashboard, User, Sun, Moon, Smartphone, Menu } from "lucide-react";
+import { LogOut, LayoutDashboard, User, Sun, Moon, Smartphone, Menu, MapPin } from "lucide-react";
+import Logo from "@/components/Logo";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
