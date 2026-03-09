@@ -7,10 +7,10 @@ const NotFound = () => {
   return (
     <>
       <SEO
-        title="404 - Page Not Found | TrackView"
-        description="The page you are looking for does not exist. Return to TrackView homepage to create tracking links and monitor device locations."
+        title="404 - Page Not Found | MᴀᴘMᴇ.Lɪᴠᴇ"
+        description="The page you are looking for does not exist. Return to MᴀᴘMᴇ.Lɪᴠᴇ homepage to create tracking links and monitor device locations."
         keywords="404, page not found"
-        canonical="https://trackview.lovable.app/404"
+        canonical="https://mapme.live/404"
       />
       <div className="flex min-h-[100dvh] items-center justify-center bg-background px-4">
         <div className="text-center space-y-6" role="main">

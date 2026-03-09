@@ -158,7 +158,7 @@ const Auth = () => {
         <Card className="w-full max-w-md shadow-elevated rounded-xl">
           <CardHeader className="text-center space-y-4">
             <div className="flex justify-center">
-              <Link to="/" aria-label="TrackView Home">
+              <Link to="/" aria-label="MᴀᴘMᴇ.Lɪᴠᴇ Home">
                 <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center shadow-card">
                   <MapPin className="w-8 h-8 text-primary-foreground" />
                 </div>

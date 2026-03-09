@@ -37,7 +37,7 @@ const Layout = ({
       {showFooter && (
         <footer className="border-t py-8 text-center text-sm text-muted-foreground">
           <div className="container mx-auto px-4">
-            <p>© 2024 TrackView - All rights reserved.</p>
+            <p>© 2024 MᴀᴘMᴇ.Lɪᴠᴇ - All rights reserved.</p>
           </div>
         </footer>
       )}

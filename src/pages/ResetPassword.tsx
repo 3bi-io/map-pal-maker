@@ -125,7 +125,7 @@ const ResetPassword = () => {
 
   return (
     <>
-      <SEO title="Reset Password - TrackView" description="Set a new password for your TrackView account." />
+      <SEO title="Reset Password - MᴀᴘMᴇ.Lɪᴠᴇ" description="Set a new password for your MᴀᴘMᴇ.Lɪᴠᴇ account." />
       <div className="min-h-screen bg-gradient-background flex items-center justify-center p-4 safe-area-top safe-area-bottom">
         <Card className="w-full max-w-md shadow-elevated">
           <CardHeader className="text-center space-y-4">

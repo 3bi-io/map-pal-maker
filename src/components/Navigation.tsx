@@ -70,7 +70,7 @@ const Navigation = () => {
     <nav className="border-b bg-card/80 backdrop-blur-md sticky top-0 z-50 safe-area-top" role="navigation" aria-label="Main navigation">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 group" aria-label="TrackView Home">
+        <Link to="/" className="flex items-center gap-2 group" aria-label="MᴀᴘMᴇ.Lɪᴠᴇ Home">
           <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-primary flex items-center justify-center shadow-card group-hover:scale-105 transition-transform">
             <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-primary-foreground" />
           </div>

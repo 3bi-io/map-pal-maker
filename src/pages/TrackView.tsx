@@ -173,9 +173,9 @@ const TrackView = () => {
   return (
     <>
       <SEO
-        title={`Enable Location Tracking - ${trackerInfo?.name || 'Tracker'} | TrackView`}
+        title={`Enable Location Tracking - ${trackerInfo?.name || 'Tracker'} | MᴀᴘMᴇ.Lɪᴠᴇ`}
         description={`Start sharing your real-time location for tracking ID ${id}.`}
-        canonical={`https://trackview.lovable.app/track/${id}`}
+        canonical={`https://mapme.live/track/${id}`}
       />
       <Layout>
         <main className="container mx-auto px-4 py-8 sm:py-12">
