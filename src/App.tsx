@@ -18,6 +18,8 @@ import MapView from "./pages/MapView";
 import TrackView from "./pages/TrackView";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
 
 const queryClient = new QueryClient();
 
