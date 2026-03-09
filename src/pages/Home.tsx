@@ -75,6 +75,7 @@ const Home = () => {
       <Layout showFooter={false}>
         <main>
           <HeroSection />
+          <ValuePropBanner />
           <FeaturesSection />
           <UseCasesSection />
           <HowItWorksSection />
