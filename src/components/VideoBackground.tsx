@@ -86,7 +86,7 @@ const VideoBackground = ({ src, poster, className, overlayClassName }: VideoBack
     <div ref={containerRef} className="absolute inset-0" aria-hidden="true">
       <video
         ref={videoRef}
-        className={cn('absolute inset-0 w-full h-full object-cover hidden sm:block', className)}
+        className={cn('absolute inset-0 w-full h-full object-cover', className)}
         autoPlay
         loop
         muted
