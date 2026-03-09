@@ -77,7 +77,7 @@ const ResetPassword = () => {
   if (!isValidToken) {
     return (
       <>
-        <SEO title="Reset Password - TrackView" description="Reset your TrackView password." />
+        <SEO title="Reset Password - MᴀᴘMᴇ.Lɪᴠᴇ" description="Reset your MᴀᴘMᴇ.Lɪᴠᴇ password." />
         <div className="min-h-screen bg-gradient-background flex items-center justify-center p-4 safe-area-top safe-area-bottom">
           <Card className="w-full max-w-md shadow-elevated text-center">
             <CardHeader>
