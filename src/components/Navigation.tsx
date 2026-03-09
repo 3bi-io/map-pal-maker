@@ -1,4 +1,4 @@
-import { LogOut, LayoutDashboard, User, Sun, Moon, Smartphone, Menu, MapPin } from "lucide-react";
+import { LogOut, LayoutDashboard, User, Sun, Moon, Smartphone, Menu, MapPin, Tag, BookOpen } from "lucide-react";
 import Logo from "@/components/Logo";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -87,6 +87,12 @@ const Navigation = () => {
           <Link to="/">
             <Button variant="ghost" className="h-10">Home</Button>
           </Link>
+          <Link to="/pricing">
+            <Button variant="ghost" className="h-10">Pricing</Button>
+          </Link>
+          <Link to="/docs">
+            <Button variant="ghost" className="h-10">Docs</Button>
+          </Link>
 
           <ThemeToggle />
           
@@ -163,6 +169,18 @@ const Navigation = () => {
                     <Button variant="ghost" className="w-full justify-start gap-2 h-12">
                       <MapPin className="w-4 h-4" />
                       Home
+                    </Button>
+                  </Link>
+                  <Link to="/pricing" onClick={() => setSheetOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start gap-2 h-12">
+                      <Tag className="w-4 h-4" />
+                      Pricing
+                    </Button>
+                  </Link>
+                  <Link to="/docs" onClick={() => setSheetOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start gap-2 h-12">
+                      <BookOpen className="w-4 h-4" />
+                      Docs
                     </Button>
                   </Link>
                   {user && (
