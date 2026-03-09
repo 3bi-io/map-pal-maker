@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { MapPin, Link2, Map, Shield, UserPlus, Share2, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -62,6 +63,17 @@ const howItWorksSteps = [
 
 const Home = () => {
   const { user } = useAuth();
+  const heroBgRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (heroBgRef.current) {
+        heroBgRef.current.style.transform = `translateY(${window.scrollY * 0.4}px) scale(1.1)`;
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -172,7 +184,8 @@ const Home = () => {
           <header className="relative py-16 sm:py-24 md:py-36 text-center space-y-5 sm:space-y-8 px-4 overflow-hidden">
             {/* Hero background image */}
             <div
-              className="absolute inset-0 -z-10 bg-cover bg-center bg-no-repeat"
+              ref={heroBgRef}
+              className="absolute inset-0 -z-10 bg-cover bg-center bg-no-repeat scale-110 will-change-transform"
               style={{ backgroundImage: "url('/images/hero-bg.jpg')" }}
               aria-hidden="true"
             >
