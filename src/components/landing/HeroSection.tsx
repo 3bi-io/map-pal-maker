@@ -84,20 +84,14 @@ const HeroSection = () => {
 
   return (
     <header className="relative py-16 sm:py-20 lg:py-28 overflow-hidden">
-      {/* Background image */}
-      <div
-        className="absolute inset-0 -z-20 bg-cover bg-center bg-no-repeat bg-background"
-        style={{ backgroundImage: "url('/images/hero-bg.jpg')" }}
+      <VideoBackground
+        src="https://stream.mux.com/JNJEOYI6B3EffB9f5ZhpGbuxzc6gSyJcXaCBbCgZKRg.m3u8"
+        overlayClassName="bg-background/50 dark:bg-background/60 [.oled_&]:bg-background/70"
       />
-      {/* Theme-aware overlay for text readability */}
-      <div className="absolute inset-0 -z-10 bg-background/50 dark:bg-background/60 [.oled_&]:bg-background/70" />
-      {/* Gradient accent overlay */}
+      {/* Static fallback for mobile */}
       <div
-        className="absolute inset-0 -z-10 opacity-40"
-        style={{
-          background:
-            "radial-gradient(ellipse 80% 60% at 50% 40%, hsl(var(--primary) / 0.15), transparent), radial-gradient(ellipse 60% 50% at 80% 60%, hsl(var(--accent) / 0.1), transparent)",
-        }}
+        className="absolute inset-0 sm:hidden bg-cover bg-center bg-no-repeat bg-background"
+        style={{ backgroundImage: "url('/images/hero-bg.jpg')" }}
       />
 
       <div className="container mx-auto px-4">
