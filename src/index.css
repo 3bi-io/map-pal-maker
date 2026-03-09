@@ -250,6 +250,18 @@ All colors MUST be HSL.
   50% { transform: scale(1.8); opacity: 0; }
 }
 
+/* Hero staggered entrance animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Custom scrollbar for better UX */
 @layer utilities {
   .scrollbar-thin {

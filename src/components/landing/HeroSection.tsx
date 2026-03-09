@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { MapPin } from "lucide-react";
+import { MapPin, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import VideoBackground from "@/components/VideoBackground";
@@ -44,29 +44,38 @@ const MapMockup = () => (
   </div>
 );
 
+const trustItems = [
+  "No credit card required",
+  "Free forever for personal use",
+  "Setup in 30 seconds",
+];
+
 const HeroSection = () => {
   const { user } = useAuth();
 
   return (
-    <header className="relative py-16 sm:py-20 lg:py-28 overflow-hidden">
-      {/* Video background (desktop only, handled inside component) */}
+    <header className="relative min-h-[calc(100dvh-4rem)] sm:min-h-0 sm:py-20 lg:py-28 overflow-hidden flex items-center">
       <VideoBackground
         src="https://stream.mux.com/JNJEOYI6B3EffB9f5ZhpGbuxzc6gSyJcXaCBbCgZKRg.m3u8"
         overlayClassName="bg-background/50 dark:bg-background/60 [.oled_&]:bg-background/70"
       />
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-4 relative z-10 py-8 sm:py-0">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* Left: Text */}
           <div className="space-y-6 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full text-sm text-primary font-medium">
+            <div
+              className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full text-sm text-primary font-medium animate-[fadeInUp_0.5s_ease-out_both]"
+              style={{ animationDelay: "0ms" }}
+            >
               <MapPin className="w-4 h-4" aria-hidden="true" />
               Real-Time Location Tracking
             </div>
 
             <h1
               id="hero-heading"
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight"
+              className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[1.1] animate-[fadeInUp_0.5s_ease-out_both]"
+              style={{ animationDelay: "100ms" }}
             >
               Track Any Device,{" "}
               <span className="text-transparent bg-clip-text bg-gradient-primary">
@@ -76,14 +85,18 @@ const HeroSection = () => {
 
             <p
               id="hero-description"
-              className="text-base sm:text-lg text-muted-foreground max-w-lg mx-auto lg:mx-0"
+              className="text-base sm:text-lg text-muted-foreground max-w-lg mx-auto lg:mx-0 leading-relaxed animate-[fadeInUp_0.5s_ease-out_both]"
+              style={{ animationDelay: "200ms" }}
             >
               Generate a unique link, share it, and monitor GPS location in
               real-time on an interactive map. No app install required.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-              <Link to={user ? "/dashboard" : "/auth"}>
+            <div
+              className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start animate-[fadeInUp_0.5s_ease-out_both]"
+              style={{ animationDelay: "300ms" }}
+            >
+              <Link to={user ? "/dashboard" : "/auth"} className="w-full sm:w-auto">
                 <Button
                   size="lg"
                   className="gap-2 text-base px-8 shadow-elevated w-full sm:w-auto h-12"
@@ -92,7 +105,7 @@ const HeroSection = () => {
                   Start Tracking Free
                 </Button>
               </Link>
-              <a href="#how-it-works">
+              <a href="#how-it-works" className="w-full sm:w-auto">
                 <Button
                   size="lg"
                   variant="ghost"
@@ -103,10 +116,20 @@ const HeroSection = () => {
               </a>
             </div>
 
-            <p className="text-xs sm:text-sm text-muted-foreground">
-              No credit card required · Free forever for personal use · Setup in
-              30 seconds
-            </p>
+            <div
+              className="flex flex-wrap items-center justify-center lg:justify-start gap-2 animate-[fadeInUp_0.5s_ease-out_both]"
+              style={{ animationDelay: "400ms" }}
+            >
+              {trustItems.map((item) => (
+                <span
+                  key={item}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-muted/60 text-xs sm:text-sm text-muted-foreground border border-border/40"
+                >
+                  <span className="w-1 h-1 rounded-full bg-primary/60 shrink-0" />
+                  {item}
+                </span>
+              ))}
+            </div>
           </div>
 
           {/* Right: Map mockup */}
@@ -115,6 +138,17 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
+
+      {/* Mobile scroll indicator */}
+      <a
+        href="#value-prop"
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 sm:hidden animate-[fadeInUp_0.5s_ease-out_both] flex flex-col items-center gap-1"
+        style={{ animationDelay: "600ms" }}
+        aria-label="Scroll down"
+      >
+        <span className="text-[10px] uppercase tracking-widest text-muted-foreground/70">Scroll</span>
+        <ChevronDown className="w-5 h-5 text-muted-foreground/70 animate-bounce" />
+      </a>
     </header>
   );
 };
