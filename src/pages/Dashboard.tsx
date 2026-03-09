@@ -192,6 +192,30 @@ const Dashboard = () => {
               </div>
             </div>
 
+            {!isProUser && !loading && (
+              <Card className="border-primary/20 bg-primary/5 shadow-card rounded-xl mb-6">
+                <CardContent className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 py-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <Sparkles className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground">Upgrade to Pro</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Unlock unlimited trackers, longer history, and priority support.
+                      </p>
+                    </div>
+                  </div>
+                  <Link to="/pricing">
+                    <Button size="sm" className="gap-1.5 shrink-0">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      View Plans
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            )}
+
             {loading ? (
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {[1, 2, 3].map((i) => (
