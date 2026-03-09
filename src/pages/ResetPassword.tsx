@@ -105,7 +105,7 @@ const ResetPassword = () => {
   if (isSuccess) {
     return (
       <>
-        <SEO title="Password Updated - TrackView" description="Your password has been updated." />
+        <SEO title="Password Updated - MᴀᴘMᴇ.Lɪᴠᴇ" description="Your password has been updated." />
         <div className="min-h-screen bg-gradient-background flex items-center justify-center p-4 safe-area-top safe-area-bottom">
           <Card className="w-full max-w-md shadow-elevated text-center">
             <CardHeader>
