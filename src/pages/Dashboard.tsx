@@ -145,9 +145,25 @@ const Dashboard = () => {
                 <div className="flex items-center gap-2">
                   <h1 className="text-2xl sm:text-3xl font-bold text-foreground">My Trackers</h1>
                   <Badge variant={isProUser ? "default" : "secondary"} className="text-xs">
-                    {isProUser ? "Pro" : "Free"}
+                  {isProUser ? "Pro" : "Free"}
                   </Badge>
                 </div>
+                {isProUser && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleManageSubscription}
+                    disabled={portalLoading}
+                    className="gap-1.5 mt-1"
+                  >
+                    {portalLoading ? (
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                    ) : (
+                      <CreditCard className="w-3 h-3" />
+                    )}
+                    Manage Subscription
+                  </Button>
+                )}
                 <p className="text-sm sm:text-base text-muted-foreground">
                   Create and manage your location trackers
                   {lastRefresh && (
