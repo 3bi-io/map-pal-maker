@@ -13,6 +13,8 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || "https://yglllvordvxufsfdatqq.supabase.co";
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -24,14 +26,37 @@ Deno.serve(async (req) => {
 
     const payload = await req.json();
 
-    const {
-      type,
-      email: recipient,
-      site_url: siteUrl,
-      confirmation_url: confirmationUrl,
-      token,
-      new_email: newEmail,
-    } = payload as Record<string, string>;
+    // Support both Supabase Auth hook format AND direct test format
+    let emailType: string;
+    let recipient: string;
+    let siteUrl: string;
+    let confirmationUrl: string;
+    let token: string | undefined;
+    let newEmail: string | undefined;
+
+    if (payload.user && payload.email_data) {
+      // --- Supabase Auth Hook payload ---
+      const { user, email_data } = payload;
+      recipient = user.email;
+      emailType = email_data.email_action_type;
+      siteUrl = email_data.site_url || "https://mapme.live";
+      token = email_data.token;
+      newEmail = user.new_email;
+
+      // Build the confirmation URL from token_hash
+      const tokenHash = email_data.token_hash;
+      const redirectTo = email_data.redirect_to || siteUrl;
+      const typeParam = emailType === "email_change" ? "email_change" : emailType;
+      confirmationUrl = `${SUPABASE_URL}/auth/v1/verify?token=${tokenHash}&type=${typeParam}&redirect_to=${encodeURIComponent(redirectTo)}`;
+    } else {
+      // --- Direct test format ---
+      emailType = payload.type;
+      recipient = payload.email;
+      siteUrl = payload.site_url || "https://mapme.live";
+      confirmationUrl = payload.confirmation_url || "";
+      token = payload.token;
+      newEmail = payload.new_email;
+    }
 
     const siteName = "MᴀᴘMᴇ.Lɪᴠᴇ";
     const fromAddress = "MᴀᴘMᴇ.Lɪᴠᴇ <noreply@notifications.3bi.io>";
@@ -59,13 +84,14 @@ Deno.serve(async (req) => {
       },
       reauthentication: {
         subject: `Your ${siteName} verification code`,
-        component: ReauthenticationEmail({ siteName, siteUrl, recipient, token }),
+        component: ReauthenticationEmail({ siteName, siteUrl, recipient, token: token || "" }),
       },
     };
 
-    const template = templateMap[type];
+    const template = templateMap[emailType];
     if (!template) {
-      return new Response(JSON.stringify({ error: `Unknown email type: ${type}` }), {
+      console.error(`Unknown email type: ${emailType}`, JSON.stringify(payload));
+      return new Response(JSON.stringify({ error: `Unknown email type: ${emailType}` }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -97,7 +123,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    console.log("Email sent successfully:", resendBody);
+    console.log(`Email sent [${emailType}] to ${recipient}:`, resendBody);
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
