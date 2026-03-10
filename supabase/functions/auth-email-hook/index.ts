@@ -1,5 +1,3 @@
-import webhooks from "@lovable.dev/webhooks-js";
-import email from "@lovable.dev/email-js";
 import { render } from "npm:@react-email/components@0.0.22";
 
 import SignupEmail from "../_shared/email-templates/signup.tsx";
@@ -21,21 +19,10 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const apiKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
+    const resendApiKey = Deno.env.get("RESEND_API_KEY");
+    if (!resendApiKey) throw new Error("RESEND_API_KEY not configured");
 
-    // Try different API patterns
-    const verifyFn = webhooks.verifyWebhook || webhooks.verify || webhooks.Webhook || webhooks;
-    let payload: Record<string, string>;
-    
-    if (typeof verifyFn === 'function') {
-      payload = await verifyFn(req, apiKey);
-    } else if (typeof verifyFn === 'object' && verifyFn.verify) {
-      payload = await verifyFn.verify(req, apiKey);
-    } else {
-      // Fallback: just parse the body
-      payload = await req.json();
-    }
+    const payload = await req.json();
 
     const {
       type,
@@ -44,10 +31,10 @@ Deno.serve(async (req) => {
       confirmation_url: confirmationUrl,
       token,
       new_email: newEmail,
-      callback_url: callbackUrl,
-    } = payload;
+    } = payload as Record<string, string>;
 
     const siteName = "MᴀᴘMᴇ.Lɪᴠᴇ";
+    const fromAddress = "MᴀᴘMᴇ.Lɪᴠᴇ <noreply@notifications.3bi.io>";
 
     const templateMap: Record<string, { subject: string; component: JSX.Element }> = {
       signup: {
@@ -86,14 +73,31 @@ Deno.serve(async (req) => {
 
     const html = await render(template.component);
 
-    // Try different email API patterns
-    const sendFn = email.sendEmail || email.send || email;
-    if (typeof sendFn === 'function') {
-      await sendFn(
-        { to: recipient, subject: template.subject, html },
-        { apiKey, callbackUrl }
-      );
+    const resendRes = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${resendApiKey}`,
+      },
+      body: JSON.stringify({
+        from: fromAddress,
+        to: [recipient],
+        subject: template.subject,
+        html,
+      }),
+    });
+
+    const resendBody = await resendRes.text();
+
+    if (!resendRes.ok) {
+      console.error("Resend error:", resendBody);
+      return new Response(JSON.stringify({ error: "Failed to send email", details: resendBody }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
+
+    console.log("Email sent successfully:", resendBody);
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
