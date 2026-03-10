@@ -1,5 +1,3 @@
-import { Webhook } from "@lovable.dev/webhooks-js";
-import { sendEmail } from "@lovable.dev/email-js";
 import { render } from "npm:@react-email/components@0.0.22";
 
 import SignupEmail from "../_shared/email-templates/signup.tsx";
@@ -21,11 +19,10 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const apiKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
+    const resendApiKey = Deno.env.get("RESEND_API_KEY");
+    if (!resendApiKey) throw new Error("RESEND_API_KEY not configured");
 
-    const webhook = new Webhook(apiKey);
-    const payload = await webhook.verify(req);
+    const payload = await req.json();
 
     const {
       type,
@@ -34,10 +31,10 @@ Deno.serve(async (req) => {
       confirmation_url: confirmationUrl,
       token,
       new_email: newEmail,
-      callback_url: callbackUrl,
     } = payload as Record<string, string>;
 
     const siteName = "MᴀᴘMᴇ.Lɪᴠᴇ";
+    const fromAddress = "MᴀᴘMᴇ.Lɪᴠᴇ <noreply@notifications.3bi.io>";
 
     const templateMap: Record<string, { subject: string; component: JSX.Element }> = {
       signup: {
@@ -76,17 +73,31 @@ Deno.serve(async (req) => {
 
     const html = await render(template.component);
 
-    await sendEmail(
-      {
-        to: recipient,
+    const resendRes = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${resendApiKey}`,
+      },
+      body: JSON.stringify({
+        from: fromAddress,
+        to: [recipient],
         subject: template.subject,
         html,
-      },
-      {
-        apiKey,
-        callbackUrl,
-      }
-    );
+      }),
+    });
+
+    const resendBody = await resendRes.text();
+
+    if (!resendRes.ok) {
+      console.error("Resend error:", resendBody);
+      return new Response(JSON.stringify({ error: "Failed to send email", details: resendBody }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    console.log("Email sent successfully:", resendBody);
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
