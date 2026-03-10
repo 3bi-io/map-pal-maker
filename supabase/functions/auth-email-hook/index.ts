@@ -1,4 +1,4 @@
-import { Webhook } from "@lovable.dev/webhooks-js";
+import { verifyWebhook } from "@lovable.dev/webhooks-js";
 import { sendEmail } from "@lovable.dev/email-js";
 import { render } from "npm:@react-email/components@0.0.22";
 
@@ -24,8 +24,7 @@ Deno.serve(async (req) => {
     const apiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
 
-    const webhook = new Webhook(apiKey);
-    const payload = await webhook.verify(req);
+    const payload = await verifyWebhook(req, apiKey);
 
     const {
       type,
