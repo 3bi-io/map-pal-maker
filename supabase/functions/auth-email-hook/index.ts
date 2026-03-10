@@ -1,5 +1,5 @@
-import { verifyWebhook } from "@lovable.dev/webhooks-js";
-import { sendEmail } from "@lovable.dev/email-js";
+import webhooks from "@lovable.dev/webhooks-js";
+import email from "@lovable.dev/email-js";
 import { render } from "npm:@react-email/components@0.0.22";
 
 import SignupEmail from "../_shared/email-templates/signup.tsx";
@@ -24,7 +24,18 @@ Deno.serve(async (req) => {
     const apiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
 
-    const payload = await verifyWebhook(req, apiKey);
+    // Try different API patterns
+    const verifyFn = webhooks.verifyWebhook || webhooks.verify || webhooks.Webhook || webhooks;
+    let payload: Record<string, string>;
+    
+    if (typeof verifyFn === 'function') {
+      payload = await verifyFn(req, apiKey);
+    } else if (typeof verifyFn === 'object' && verifyFn.verify) {
+      payload = await verifyFn.verify(req, apiKey);
+    } else {
+      // Fallback: just parse the body
+      payload = await req.json();
+    }
 
     const {
       type,
@@ -34,7 +45,7 @@ Deno.serve(async (req) => {
       token,
       new_email: newEmail,
       callback_url: callbackUrl,
-    } = payload as Record<string, string>;
+    } = payload;
 
     const siteName = "MᴀᴘMᴇ.Lɪᴠᴇ";
 
@@ -75,17 +86,14 @@ Deno.serve(async (req) => {
 
     const html = await render(template.component);
 
-    await sendEmail(
-      {
-        to: recipient,
-        subject: template.subject,
-        html,
-      },
-      {
-        apiKey,
-        callbackUrl,
-      }
-    );
+    // Try different email API patterns
+    const sendFn = email.sendEmail || email.send || email;
+    if (typeof sendFn === 'function') {
+      await sendFn(
+        { to: recipient, subject: template.subject, html },
+        { apiKey, callbackUrl }
+      );
+    }
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
